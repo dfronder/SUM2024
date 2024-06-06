@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : mylib.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 05.06.2024
+ * LAST UPDATE : 06.06.2024
  * PURPOSE     : Julia Fractal java script file.
  */
 
@@ -41,7 +41,7 @@ export function initGL() {
  
   void main( void )
   {
-    vec2 Z = DrawPos;
+    vec2 Z = DrawPos * (1.0 + sin(Time)) + sin(Time * 0.5);
     vec2 Z0 = Z, C = vec2(0.35 + 0.05 * sin(Time * 1.30), 0.35 + 0.05 * sin(Time * 0.8));
     int n = 0;
     
