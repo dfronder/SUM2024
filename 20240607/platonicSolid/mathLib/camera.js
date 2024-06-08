@@ -57,7 +57,7 @@ class _camera {
       ry *= this.frameH / this.frameW;
   
     this.wp = rx;
-    this.wp = ry;
+    this.hp = ry;
     this.matProj.frustum(-rx / 2, rx / 2, -ry / 2, ry / 2, this.projDist, this.projFarClip);
     this.matVP.mul(this.matView, this.matProj);
   } // End of 'setProj' function

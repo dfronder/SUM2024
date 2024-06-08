@@ -19,7 +19,7 @@ export function vertex(...args) {
 } // End of 'vertex' function
 
 class _primitive {
-  constructor(vert, type, noofv, ind, noofi) {
+  constructor(type, vert, noofv, ind, noofi) {
     this.va = 0
     this.vbuf = 0;
     this.ibuf = 0;
@@ -114,8 +114,8 @@ class _primitive {
       let n = p1.sub(p0).cross(p2.sub(p0)).normalize();
   
       vert[n0].n = vert[n0].n.add(n);
-      vert[n1].n = VecAddVec(vert[n1].n, n);
-      vert[n2].n = VecAddVec(vert[n2].n, n);
+      vert[n1].n = vert[n1].n.add(n);
+      vert[n2].n = vert[n2].n.add(n);
     }
   
     /* Normalize all vertex normals */

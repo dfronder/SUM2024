@@ -41,7 +41,7 @@
 
         window.anim.initGL();
 
-        let prim = frndr.primitive(vert, window.anim.gl.TRIANGLES, 4, ind, 6);
+        let prim = frndr.primitive(window.anim.gl.TRIANGLES, vert, 4, ind, 6);
 
         const draw = () => {
           prim.draw(frndr.mat4().rotateY(90));
