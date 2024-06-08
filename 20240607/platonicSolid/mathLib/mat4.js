@@ -53,38 +53,20 @@ class _mat4 {
     let newMatr = new mat4();
     
     newMatr.m[0][0] = this.m[0][0] * m.m[0][0] + this.m[0][1] * m.m[1][0] + this.m[0][2] * m.m[2][0] + this.m[0][3] * m.m[3][0];
-    
     newMatr.m[0][1] = this.m[0][0] * m.m[0][1] + this.m[0][1] * m.m[1][1] + this.m[0][2] * m.m[2][1] + this.m[0][3] * m.m[3][1];
-    
     newMatr.m[0][2] = this.m[0][0] * m.m[0][2] + this.m[0][1] * m.m[1][2] + this.m[0][2] * m.m[2][2] + this.m[0][3] * m.m[3][2];
-    
     newMatr.m[0][3] = this.m[0][0] * m.m[0][3] + this.m[0][1] * m.m[1][3] + this.m[0][2] * m.m[2][3] + this.m[0][3] * m.m[3][3];
-    
-    
     newMatr.m[1][0] = this.m[1][0] * m.m[0][0] + this.m[1][1] * m.m[1][0] + this.m[1][2] * m.m[2][0] + this.m[1][3] * m.m[3][0];
-    
     newMatr.m[1][1] = this.m[1][0] * m.m[0][1] + this.m[1][1] * m.m[1][1] + this.m[1][2] * m.m[2][1] + this.m[1][3] * m.m[3][1];
-    
     newMatr.m[1][2] = this.m[1][0] * m.m[0][2] + this.m[1][1] * m.m[1][2] + this.m[1][2] * m.m[2][2] + this.m[1][3] * m.m[3][2];
-    
     newMatr.m[1][3] = this.m[1][0] * m.m[0][3] + this.m[1][1] * m.m[1][3] + this.m[1][2] * m.m[2][3] + this.m[1][3] * m.m[3][3];
-    
-    
     newMatr.m[2][0] = this.m[2][0] * m.m[0][0] + this.m[2][1] * m.m[1][0] + this.m[2][2] * m.m[2][0] + this.m[2][3] * m.m[3][0];
-    
     newMatr.m[2][1] = this.m[2][0] * m.m[0][1] + this.m[2][1] * m.m[1][1] + this.m[2][2] * m.m[2][1] + this.m[2][3] * m.m[3][1];
-    
     newMatr.m[2][2] = this.m[2][0] * m.m[0][2] + this.m[2][1] * m.m[1][2] + this.m[2][2] * m.m[2][2] + this.m[2][3] * m.m[3][2];
-    
     newMatr.m[2][3] = this.m[2][0] * m.m[0][3] + this.m[2][1] * m.m[1][3] + this.m[2][2] * m.m[2][3] + this.m[2][3] * m.m[3][3];
-    
-    
     newMatr.m[3][0] = this.m[3][0] * m.m[0][0] + this.m[3][1] * m.m[1][0] + this.m[3][2] * m.m[2][0] + this.m[3][3] * m.m[3][0];
-    
     newMatr.m[3][1] = this.m[3][0] * m.m[0][1] + this.m[3][1] * m.m[1][1] + this.m[3][2] * m.m[2][1] + this.m[3][3] * m.m[3][1];
-    
     newMatr.m[3][2] = this.m[3][0] * m.m[0][2] + this.m[3][1] * m.m[1][2] + this.m[3][2] * m.m[2][2] + this.m[3][3] * m.m[3][2];
-    
     newMatr.m[3][3] = this.m[3][0] * m.m[0][3] + this.m[3][1] * m.m[1][3] + this.m[3][2] * m.m[2][3] + this.m[3][3] * m.m[3][3];
 
     return newMatr;
@@ -120,8 +102,9 @@ class _mat4 {
 
   rotateX(a) {
     if (typeof a == 'number') {
-      this.m = [[Math.cos(a), Math.sin(a), 0, 0],
-                [-Math.sin(a), Math.cos(a), 0, 0],
+      let A = a * (Math.PI / 180.0);
+      this.m = [[Math.cos(A), Math.sin(A), 0, 0],
+                [-Math.sin(A), Math.cos(A), 0, 0],
                 [0, 0, 1, 0],
                 [0, 0, 0, 1]];
     }
@@ -130,9 +113,10 @@ class _mat4 {
 
   rotateY(a) {
     if (typeof a == 'number') {
+      let A = a * (Math.PI / 180.0);
       this.m = [[1, 0, 0, 0],
-                [0, Math.cos(a), Math.sin(a), 0],
-                [0, -Math.sin(a), Math.cos(a), 0],
+                [0, Math.cos(A), Math.sin(A), 0],
+                [0, -Math.sin(A), Math.cos(A), 0],
                 [0, 0, 0, 1]];
     }
     return this;
@@ -140,9 +124,10 @@ class _mat4 {
 
   rotateZ(a) {
     if (typeof a == 'number') {
-      this.m = [[Math.cos(a), 0, -Math.sin(a), 0],
+      let A = a * (Math.PI / 180.0);
+      this.m = [[Math.cos(A), 0, -Math.sin(A), 0],
                 [0, 1, 0, 0],
-                [Math.sin(a), 0, Math.cos(a), 0],
+                [Math.sin(A), 0, Math.cos(A), 0],
                 [0, 0, 0, 1]];
      }
     return this;

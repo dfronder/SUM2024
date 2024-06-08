@@ -5,8 +5,7 @@
  * PURPOSE     : Camera java script library file.
  */
 
-import {vec3} from "./vec3.js";
-import {mat4} from "./mat4.js";
+import {vec3, mat4} from "../lib.js";
 
 class _camera {
   constructor() {
