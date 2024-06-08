@@ -1,0 +1,41 @@
+<!--
+   FILE NAME   : index.html
+   PROGRAMMER  : DC6
+   LAST UPDATE : 07.06.2024
+   PURPOSE     : Platonic Solid html file.
+-->
+
+<!DOCTYPE html>
+<html lang="ru" class="notranslate" translate="no">
+  <head>
+    <meta name="google" content="notranslate">    
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="m.png" type="image/png" />
+    <script type="module" src="./lib.js"></script>
+    <title>Platonic Solid</title>
+    <h1><b>Platonic Solid</b></h1>
+  </head>
+  <body>
+    <canvas id="myCan" width="1200px" height="700px" style="border: 2px solid red"></canvas>
+    <script type="module">
+      import {vec3} from "./mathLib/vec3.js";
+      import {mat4} from "./mathLib/mat4.js";
+      import {camera} from "./mathLib/camera.js";
+
+      let c = new camera();
+      let v1 = new vec3(1, 1, 1); 
+      let result = v1.normalize();
+      let loc = new vec3(5, 0, 5);
+      let at = new vec3(1, 1, 1);
+      let up = new vec3(6, 8, 9);
+      let matr = new mat4().rotateX(78);
+      matr = matr.frustum(1, 2, 3, 4, 5, 6);
+      console.log(matr);
+      console.log(mat4().rotateX(78));
+      console.log(c);
+
+    </script>
+    </body>
+</html>
+
+<!-- END OF 'index.html' FILE -->
