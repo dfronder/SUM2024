@@ -1,7 +1,7 @@
 <!--
    FILE NAME   : index.html
    PROGRAMMER  : DC6
-   LAST UPDATE : 07.06.2024
+   LAST UPDATE : 08.06.2024
    PURPOSE     : Platonic Solid html file.
 -->
 
@@ -17,19 +17,19 @@
   </head>
   <body>
     <canvas id="myCan" width="1200px" height="700px" style="border: 2px solid red"></canvas>
+    <!-- test of mathLib !!problems with mat4 -->
     <script type="module">
-      import {vec3} from "./mathLib/vec3.js";
-      import {mat4} from "./mathLib/mat4.js";
-      import {camera} from "./mathLib/camera.js";
+      import {vec3, camera, mat4} from "./lib.js";
 
-      let c = new camera();
-      let v1 = new vec3(1, 1, 1); 
+      let c = camera();
+      let v1 = vec3(1, 1, 1); 
       let result = v1.normalize();
-      let loc = new vec3(5, 0, 5);
-      let at = new vec3(1, 1, 1);
-      let up = new vec3(6, 8, 9);
-      let matr = new mat4().rotateX(78);
-      matr = matr.frustum(1, 2, 3, 4, 5, 6);
+      let loc = vec3(5, 0, 5);
+      let at = vec3(1, 1, 1);
+      let up = vec3(6, 8, 9);
+      let matr = mat4().rotateX(78);
+      //c.set(loc, at, up);
+      matr = matr.view(loc, at, up);
       console.log(matr);
       console.log(mat4().rotateX(78));
       console.log(c);
