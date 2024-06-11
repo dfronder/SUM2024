@@ -68,49 +68,49 @@ class _primitive {
     }
     this.rnd.shader.apply();
 
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWVP")) != -1) {
-      rnd.gl.uniformMatrix4fv(loc, false, wvp.toArray(), 0);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWVP")) != -1) {
+      this.rnd.gl.uniformMatrix4fv(loc, false, wvp.toArray(), 0);
     }
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWInv")) != -1) {
-      rnd.gl.uniformMatrix4fv(loc, false, wnormal.toArray(), 16);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWInv")) != -1) {
+      this.rnd.gl.uniformMatrix4fv(loc, false, wnormal.toArray(), 16);
     }
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrW")) != -1) {
-      rnd.gl.uniformMatrix4fv(loc, false, w.toArray(), 16);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrW")) != -1) {
+      this.rnd.gl.uniformMatrix4fv(loc, false, w.toArray(), 16);
     }
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "Time")) != -1) {
-      rnd.gl.uniform1f(loc, this.rnd.timer.globalTime, 4);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "Time")) != -1) {
+      this.rnd.gl.uniform1f(loc, this.rnd.timer.globalTime, 4);
     }
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "CamLoc")) != -1) {
-      rnd.gl.uniform3fv(loc, this.rnd.camera.loc.toArray(), 12);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamLoc")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.loc.toArray(), 12);
     }
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "CamRight")) != -1) {
-      rnd.gl.uniform3fv(loc, this.rnd.camera.right.toArray(), 12);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamRight")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.right.toArray(), 12);
     }
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "CamUp")) != -1) {
-      rnd.gl.uniform3fv(loc, this.rnd.camera.up.toArray(), 12);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamUp")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.up.toArray(), 12);
     }
-    if ((loc = rnd.gl.getUniformLocation(this.rnd.shader.id, "CamDir")) != -1) {
-      rnd.gl.uniform3fv(loc, this.rnd.camera.dir.toArray(), 12);
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamDir")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.dir.toArray(), 12);
     }
 
-    rnd.gl.bindVertexArray(this.vs);
+    this.rnd.gl.bindVertexArray(this.vs);
     if (this.ibuf == 0) {
-      rnd.gl.drawArrays(this.type, 0, this.numOfElements);
+      this.rnd.gl.drawArrays(this.type, 0, this.numOfElements);
     } else {
-      rnd.gl.bindBuffer(this.rnd.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
-      rnd.gl.drawElements(this.type, this.numOfElements, this.rnd.gl.UNSIGNED_INT, null);
+      this.rnd.gl.bindBuffer(this.rnd.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
+      this.rnd.gl.drawElements(this.type, this.numOfElements, this.rnd.gl.UNSIGNED_INT, null);
     }
   } // End of 'draw' function
 
   free() {
     if (this.va != 0) {
-      rnd.gl.bindVertexArray(this.va);
-      rnd.gl.bindBuffer(rnd.gl.ARRAY_BUFFER, 0);
-      rnd.gl.deleteBuffer(1, this.va);
-      rnd.gl.deleteVertexArray(1, this.va);
+      this.rnd.gl.bindVertexArray(this.va);
+      this.rnd.gl.bindBuffer(rnd.gl.ARRAY_BUFFER, 0);
+      this.rnd.gl.deleteBuffer(1, this.va);
+      this.rnd.gl.deleteVertexArray(1, this.va);
     }
     if (this.ibuf != 0) {
-      window.gl.deleteBuffer(1, this.ibuf);
+      this.rnd.gl.deleteBuffer(1, this.ibuf);
     }
   } // End of 'free' function
 
