@@ -115,8 +115,4 @@ export function shader(...args) {
   return new _shader(...args);
 } // End of 'shader' function
 
-// let src = document.getElementById("shdVertSrc").value;
-// shd.shaders[0].src = src;
-// shd.updateShadersSource();
-
 /* END OF 'shaders.js' FILE */
