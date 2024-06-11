@@ -6,7 +6,11 @@
  */
 
 import * as dc from "./lib.js";
-let areas = [document.getElementById("myCan"), document.getElementById("myCan2")];
+let areas = [document.getElementById("myCan"), 
+             document.getElementById("myCan2"), 
+             document.getElementById("myCan3"), 
+             document.getElementById("myCan4"), 
+             document.getElementById("myCan5")];
 
 window.addEventListener("load", () => {
   for (const s of areas) {
