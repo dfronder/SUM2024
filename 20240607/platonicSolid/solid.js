@@ -5,6 +5,7 @@
  * PURPOSE     : Platonic solid javascript library.
  */
 
+import {vec3, getN} from "./mathLib/vec3.js";
 import {vertex} from "./lib.js";
 
 ///////////

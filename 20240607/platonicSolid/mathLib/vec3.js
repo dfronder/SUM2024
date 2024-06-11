@@ -79,4 +79,9 @@ export function vec3(...args) {
   return new _vec3(...args);
 }  // End of 'vec3' function
 
+export function getN(x, y, z) {
+  let v = vec3(x, y, z);
+  return v.normalize();
+} // End of 'getN' function
+
 /* END OF 'vec3.js' FILE */
