@@ -1,7 +1,7 @@
 <!--
    FILE NAME   : index.html
    PROGRAMMER  : DC6
-   LAST UPDATE : 08.06.2024
+   LAST UPDATE : 11.06.2024
    PURPOSE     : Platonic Solid html file.
 -->
 
@@ -16,47 +16,9 @@
     <h1><b>Platonic Solid</b></h1>
   </head>
   <body>
-    <canvas id="myCan" width="1200px" height="700px" style="border: 2px solid red"></canvas>
-    <script type="module">
-      import * as frndr from "./lib.js";
-
-      window.addEventListener("load", () => {
-        let canvas = document.getElementById("myCan");
-        window.anim = frndr.anim(canvas);
-        let vert = [frndr.vertex(), frndr.vertex(), frndr.vertex(), frndr.vertex()];
-        let ind = [];
-
-        vert[0].p = frndr.vec3(0, 0, 0);
-        vert[1].p = frndr.vec3(10, 0, 0);
-        vert[2].p = frndr.vec3(0, 10, 0);
-        vert[3].p = frndr.vec3(10, 10, 0);
-
-        ind[0] = 0;
-        ind[1] = 1;
-        ind[2] = 2;
-
-        ind[3] = 2;
-        ind[4] = 1;
-        ind[5] = 3;
-
-        window.anim.initGL();
-
-        let prim = frndr.primitive(window.anim.gl.TRIANGLES, vert, 4, ind, 6);
-
-        const draw = () => {
-          prim.draw(frndr.mat4().rotateY(90));
-          // drawing
-          window.anim.render();
-          
-          // timer response
-          window.anim.timer.response();
-
-          // animation register
-          window.requestAnimationFrame(draw);
-        };
-        draw();
-      });
-    </script>
+    <canvas id="myCan" width="500px" height="500px" style="border: 2px solid red"></canvas>
+    <canvas id="myCan2" width="500px" height="500px" style="border: 2px solid red"></canvas>
+    <script type="module" src="./main.js"></script>
     </body>
 </html>
 

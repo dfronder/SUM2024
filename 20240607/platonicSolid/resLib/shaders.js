@@ -1,28 +1,27 @@
 /*
  * FILE NAME   : shaders.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 08.06.2024
+ * LAST UPDATE : 11.06.2024
  * PURPOSE     : OpenGL shaders java script library file.
  */
-
-import * as pcsd from "../lib.js";
-
+  
 class _shader {
-  async _init(name) {
+  async _init(rnd, name) {
+    this.rnd = rnd;
     this.name = name;
     this.id = null;
     this.shaders =
     [
       {
         id: null,
-        type: window.anim.gl.VERTEX_SHADER,
-        name: "vert",
+        type: this.rnd.gl.FRAGMENT_SHADER,
+        name: "frag",
         src: "",
       },
       {
         id: null,
-        type: window.anim.gl.FRAGMENT_SHADER,
-        name: "frag",
+        type: this.rnd.gl.VERTEX_SHADER,
+        name: "vert",
         src: "",
       }
     ];
@@ -41,23 +40,23 @@ class _shader {
     this.id = null;
     if (this.shaders[0].src == "" || this.shaders[1].src == "")
       return;
-    this.shaders.forEach(s => {
-      s.id = window.anim.gl.createShader(s.type);
-      window.anim.gl.shaderSource(s.id, s.src);
-      window.anim.gl.compileShader(s.id);
-      if (!window.anim.gl.getShaderParameter(s.id, window.anim.gl.COMPILE_STATUS)) {
-        let buf = window.anim.gl.getShaderInfoLog(s.id);
+    for (const s of this.shaders) {
+      s.id = this.rnd.gl.createShader(s.type);
+      this.rnd.gl.shaderSource(s.id, s.src);
+      this.rnd.gl.compileShader(s.id);
+      if (!this.rnd.gl.getShaderParameter(s.id, this.rnd.gl.COMPILE_STATUS)) {
+        let buf = this.rnd.gl.getShaderInfoLog(s.id);
         console.log(`Shader ${this.name}/${s.name} compile fail: ${buf}`);
       }                                            
-    });             
-    this.id = window.anim.gl.createProgram();
+    };             
+    this.id = this.rnd.gl.createProgram();
     this.shaders.forEach(s => {
       if (s.id != null)
-        window.anim.gl.attachShader(this.id, s.id);
+        this.rnd.gl.attachShader(this.id, s.id);
     });
-    window.anim.gl.linkProgram(this.id);
-    if (!window.anim.gl.getProgramParameter(this.id, window.anim.gl.LINK_STATUS)) {
-      let buf = window.anim.gl.getProgramInfoLog(this.id);
+    this.rnd.gl.linkProgram(this.id);
+    if (!this.rnd.gl.getProgramParameter(this.id, this.rnd.gl.LINK_STATUS)) {
+      let buf = this.rnd.gl.getProgramInfoLog(this.id);
       console.log(`Shader program ${this.name} link fail: ${buf}`);
     }                                            
     this.updateShaderData();    
@@ -65,55 +64,55 @@ class _shader {
   updateShaderData() {
     // Shader attributes
     this.attrs = {};
-    const countAttrs = window.anim.gl.getProgramParameter(this.id, window.anim.gl.ACTIVE_ATTRIBUTES);
+    const countAttrs = this.rnd.gl.getProgramParameter(this.id, this.rnd.gl.ACTIVE_ATTRIBUTES);
     for (let i = 0; i < countAttrs; i++) {
-      const info = window.anim.gl.getActiveAttrib(this.id, i);
+      const info = this.rnd.gl.getActiveAttrib(this.id, i);
       this.attrs[info.name] = {
         name: info.name,
         type: info.type,
         size: info.size,
-        loc: window.anim.gl.getAttribLocation(this.id, info.name),
+        loc: this.rnd.gl.getAttribLocation(this.id, info.name),
       };
     }
  
     // Shader uniforms
     this.uniforms = {};
-    const countUniforms = window.anim.gl.getProgramParameter(this.id, window.anim.gl.ACTIVE_UNIFORMS);
+    const countUniforms = this.rnd.gl.getProgramParameter(this.id, this.rnd.gl.ACTIVE_UNIFORMS);
     for (let i = 0; i < countUniforms; i++) {
-      const info = window.anim.gl.getActiveUniform(this.id, i);
+      const info = this.rnd.gl.getActiveUniform(this.id, i);
       this.uniforms[info.name] = {
         name: info.name,
         type: info.type,
         size: info.size,
-        loc: window.anim.gl.getUniformLocation(this.id, info.name),
+        loc: this.rnd.gl.getUniformLocation(this.id, info.name),
       };
     }
  
     // Shader uniform blocks
     this.uniformBlocks = {};
-    const countUniformBlocks = window.anim.gl.getProgramParameter(this.id, window.anim.gl.ACTIVE_UNIFORM_BLOCKS);
+    const countUniformBlocks = this.rnd.gl.getProgramParameter(this.id, this.rnd.gl.ACTIVE_UNIFORM_BLOCKS);
     for (let i = 0; i < countUniformBlocks; i++) {
-      const block_name = window.anim.gl.getActiveUniformBlockName(this.id, i);
-      const index = window.anim.gl.getActiveUniformBlockIndex(this.id, block_name);
+      const block_name = this.rnd.gl.getActiveUniformBlockName(this.id, i);
+      const index = this.rnd.gl.getActiveUniformBlockIndex(this.id, block_name);
       this.uniformBlocks[block_name] = {
         name: block_name,
         index: index,
-        size: window.anim.gl.getActiveUniformBlockParameter(this.id, idx, window.anim.gl.UNIFORM_BLOCK_DATA_SIZE),
-        bind: window.anim.gl.getActiveUniformBlockParameter(this.id, idx, window.anim.gl.UNIFORM_BLOCK_BINDING),
+        size: this.rnd.gl.getActiveUniformBlockParameter(this.id, idx, this.rnd.gl.UNIFORM_BLOCK_DATA_SIZE),
+        bind: this.rnd.gl.getActiveUniformBlockParameter(this.id, idx, this.rnd.gl.UNIFORM_BLOCK_BINDING),
       };
     }
   } // End of 'updateShaderData' function
-  constructor(name) {
-    this._init(name)
+  constructor(rnd, name) {
+    this._init(rnd, name)
   } // End of 'constructor' function
   apply() {
     if (this.id != null)
-      window.anim.gl.useProgram(this.id);
+      this.rnd.gl.useProgram(this.id);
   } // End of 'apply' function
 } // End of '_shader' class
 
-export function shader(name) {
-  return new _shader(name);
+export function shader(...args) {
+  return new _shader(...args);
 } // End of 'shader' function
 
 // let src = document.getElementById("shdVertSrc").value;

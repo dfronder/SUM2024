@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : primitives.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 08.06.2024
+ * LAST UPDATE : 11.06.2024
  * PURPOSE     : OpenGL primitives java script library file.
  */
 
@@ -19,31 +19,31 @@ export function vertex(...args) {
 } // End of 'vertex' function
 
 class _primitive {
-  constructor(type, vert, noofv, ind, noofi) {
+  constructor(rnd, type, vert, noofv, ind, noofi) {
     this.va = 0
     this.vbuf = 0;
     this.ibuf = 0;
-    this.va = window.anim.gl.createVertexArray();
+    this.va = this.rnd.gl.createVertexArray();
     
     if (vert != null && noofv != 0)
     {
-      window.anim.gl.bindVertexArray(this.va);
+      this.rnd.gl.bindVertexArray(this.va);
     
-      this.vbuf = window.anim.gl.createBuffer();
-      window.anim.gl.bindBuffer(window.anim.gl.ARRAY_BUFFER, this.vbuf);
-      window.anim.gl.bufferData(window.anim.gl.ARRAY_BUFFER, new Float32Array(vert), window.anim.gl.STATIC_DRAW);
+      this.vbuf = this.rnd.gl.createBuffer();
+      this.rnd.gl.bindBuffer(this.rnd.gl.ARRAY_BUFFER, this.vbuf);
+      this.rnd.gl.bufferData(this.rnd.gl.ARRAY_BUFFER, new Float32Array(vert), this.rnd.gl.STATIC_DRAW);
     
-      window.anim.gl.vertexAttribPointer(0, 3, window.anim.gl.FLOAT, false, 3 * 4, 0);
-      window.anim.gl.vertexAttribPointer(1, 3, window.anim.gl.FLOAT, false, 3 * 4, 3 * 4);
+      this.rnd.gl.vertexAttribPointer(0, 3, this.rnd.gl.FLOAT, false, 3 * 4, 0);
+      this.rnd.gl.vertexAttribPointer(1, 3, this.rnd.gl.FLOAT, false, 3 * 4, 3 * 4);
     
-      window.anim.gl.enableVertexAttribArray(0);
-      window.anim.gl.enableVertexAttribArray(1);
+      this.rnd.gl.enableVertexAttribArray(0);
+      this.rnd.gl.enableVertexAttribArray(1);
     }
     
     if (ind != null && noofi != 0) {
-      this.ibuf = window.anim.gl.createBuffer();
-      window.anim.gl.bindBuffer(window.anim.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
-      window.anim.gl.bufferData(window.anim.gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(ind), window.anim.gl.STATIC_DRAW);
+      this.ibuf = this.rnd.gl.createBuffer();
+      this.rnd.gl.bindBuffer(this.rnd.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
+      this.rnd.gl.bufferData(this.rnd.gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(ind), this.rnd.gl.STATIC_DRAW);
       this.numOfElements = noofi;
     } else {
       this.numOfElements = noofv;
@@ -56,43 +56,54 @@ class _primitive {
   draw(world) {
     let w = this.trans.mul(world);
     let wnormal = w.transpose(w.inverse());
-    let wvp = w.mul(window.anim.camera.matVP);
+    let wvp = w.mul(this.rnd.camera.matVP);
     let loc;
-  
-    window.anim.gl.useProgram(window.anim.shader.id);
-    /*
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "MatrWVP")) != -1)
-      window.anim.gl.uniformMatrix4fv(loc, 1, false, wvp.toArray());
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "MatrWInv")) != -1)
-      window.anim.gl.uniformMatrix4fv(loc, 1, false, wnormal.toArray());
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "MatrW")) != -1)
-      window.anim.gl.uniformMatrix4fv(loc, 1, false, w.toArray());
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "Time")) != -1)
-      window.anim.gl.uniform1f(loc, window.anim.timer.globalTime);
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "CamLoc")) != -1)
-      window.anim.gl.uniform3fv(loc, 1, window.anim.camera.loc.toArray());
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "CamRight")) != -1)
-      window.anim.gl.uniform3fv(loc, 1, window.anim.camera.right.toArray());
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "CamUp")) != -1)
-      window.anim.gl.uniform3fv(loc, 1, window.anim.camera.up.toArray());
-    if ((loc = window.anim.gl.getUniformLocation(window.anim.shader.id, "CamDir")) != -1)
-      window.anim.gl.uniform3fv(loc, 1, window.anim.camera.dir.toArray());
-    */
-    window.anim.gl.bindVertexArray(this.vs);
+    
+    if (this.rnd.shader.id == null) {
+      return;
+    }
+    this.rnd.shader.apply();
+
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWVP")) != -1) {
+      this.rnd.gl.uniformMatrix4fv(loc, false, wvp.toArray(), 0);
+    }
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWInv")) != -1) {
+      this.rnd.gl.uniformMatrix4fv(loc, false, wnormal.toArray(), 16);
+    }
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrW")) != -1) {
+      this.rnd.gl.uniformMatrix4fv(loc, false, w.toArray(), 16);
+    }
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "Time")) != -1) {
+      this.rnd.gl.uniform1f(loc, this.rnd.timer.globalTime, 4);
+    }
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamLoc")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.loc.toArray(), 12);
+    }
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamRight")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.right.toArray(), 12);
+    }
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamUp")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.up.toArray(), 12);
+    }
+    if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamDir")) != -1) {
+      this.rnd.gl.uniform3fv(loc, this.rnd.camera.dir.toArray(), 12);
+    }
+
+    this.rnd.gl.bindVertexArray(this.vs);
     if (this.ibuf == 0) {
-      window.anim.gl.drawArrays(this.type, 0, this.numOfElements);
+      this.rnd.gl.drawArrays(this.type, 0, this.numOfElements);
     } else {
-      window.anim.gl.bindBuffer(window.anim.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
-      window.anim.gl.drawElements(this.type, this.numOfElements, window.anim.gl.UNSIGNED_INT, null);
+      this.rnd.gl.bindBuffer(this.rnd.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
+      this.rnd.gl.drawElements(this.type, this.numOfElements, this.rnd.gl.UNSIGNED_INT, null);
     }
   } // End of 'draw' function
 
   free() {
     if (this.va != 0) {
-      window.anim.gl.bindVertexArray(this.va);
-      window.anim.gl.bindBuffer(window.anim.gl.ARRAY_BUFFER, 0);
-      window.anim.gl.deleteBuffer(1, this.va);
-      window.anim.gl.deleteVertexArray(1, this.va);
+      this.rnd.gl.bindVertexArray(this.va);
+      this.rnd.gl.bindBuffer(this.rnd.gl.ARRAY_BUFFER, 0);
+      this.rnd.gl.deleteBuffer(1, this.va);
+      this.rnd.gl.deleteVertexArray(1, this.va);
     }
     if (this.ibuf != 0) {
       window.gl.deleteBuffer(1, this.ibuf);
