@@ -5,16 +5,16 @@
  * PURPOSE     : Main render module java script file.
  */
 
-import * as pcsd from "./lib.js";
+import * as dc from "./lib.js";
 
 class _anim {
   constructor(canvas) {
     this.gl = canvas.getContext("webgl2");
     this.initGL();
-    this.timer = new pcsd.timer();
-    this.camera = pcsd.camera();
+    this.timer = new dc.timer();
+    this.camera = dc.camera();
 
-    this.camera.set(pcsd.vec3(4.5), pcsd.vec3(0, 0, 0), pcsd.vec3(0, 1, 0));
+    this.camera.set(dc.vec3(4.5), dc.vec3(0, 0, 0), dc.vec3(0, 1, 0));
 
     this.camera.frameH = canvas.height;
     this.camera.frameW = canvas.width;
@@ -36,12 +36,32 @@ class _anim {
   } // End of 'render' function
 
   primCreate(...args) {
-    return pcsd.primitive(this, ...args);
+    return dc.primitive(this, ...args);
   } // End of 'primCreate' function
 
   shaderCreate(...args) {
-    return pcsd.shader(this, ...args);
+    return dc.shader(this, ...args);
   } // End of 'shaderCreate' function
+
+  primCreateTetrahedron() {
+    return new dc.tetrahedron(this);
+  } // End of 'primCreateTetrahedron' function
+
+  primCreateCube() {
+    return new dc.cube(this);
+  } // End of 'primCreateTetrahedron' function
+
+  primCreateOctahedron() {
+    return new dc.octahedron(this);
+  } // End of 'primCreateTetrahedron' function
+  
+  primCreateDodecahedron() {
+    return new dc.dodecahedron(this);
+  } // End of 'primCreateTetrahedron' function
+  
+  primCreateIcosahedron() {
+    return new dc.icosahedron(this);
+  } // End of 'primCreateTetrahedron' function
 } // End of '_anim' function
 
 export function anim(...args) {

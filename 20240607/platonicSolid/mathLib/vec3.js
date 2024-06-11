@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : vec3.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 08.06.2024
+ * LAST UPDATE : 11.06.2024
  * PURPOSE     : Vectors (x, y, z) java script library file.
  */
 
@@ -69,6 +69,10 @@ class _vec3 {
   toArray() {
     return [this.x, this.y, this.z];
   } // End of 'toArray' function
+
+  neg() {
+    return vec3(-this.x, -this.y, -this.z);
+  } // End of 'neg' function
 } // End of '_vec3' class
 
 export function vec3(...args) {

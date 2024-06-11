@@ -5,21 +5,21 @@
  * PURPOSE     : Main java script file.
  */
 
-import * as frndr from "./lib.js";
+import * as dc from "./lib.js";
 let areas = [document.getElementById("myCan"), document.getElementById("myCan2")];
 
 window.addEventListener("load", () => {
   for (const s of areas) {
     let canvas = s;
-    let rnd = frndr.anim(canvas);
+    let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
-    let vert = [frndr.vertex(), frndr.vertex(), frndr.vertex(), frndr.vertex()];
+    let vert = [dc.vertex(), dc.vertex(), dc.vertex(), dc.vertex()];
     let ind = [];
   
-    vert[0].p = frndr.vec3(0, 0, 0);
-    vert[1].p = frndr.vec3(10, 0, 0);
-    vert[2].p = frndr.vec3(0, 10, 0);
-    vert[3].p = frndr.vec3(10, 10, 0);
+    vert[0].p = dc.vec3(0, 0, 0);
+    vert[1].p = dc.vec3(10, 0, 0);
+    vert[2].p = dc.vec3(0, 10, 0);
+    vert[3].p = dc.vec3(10, 10, 0);
   
     ind[0] = 0;
     ind[1] = 1;
@@ -29,7 +29,11 @@ window.addEventListener("load", () => {
     ind[4] = 1;
     ind[5] = 3;
   
+    let prim = rnd.primCreate(rnd.gl.TRIANGLES, vert, 4, ind, 6);
+
     const draw = () => {
+      prim.draw();
+
       // drawing
       rnd.render();
   
