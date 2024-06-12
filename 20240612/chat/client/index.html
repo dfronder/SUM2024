@@ -1,0 +1,40 @@
+<!--
+   FILE NAME   : index.html
+   PROGRAMMER  : DC6
+   LAST UPDATE : 12.06.2024
+   PURPOSE     : Chat html file.
+-->
+
+<!DOCTYPE html>
+<html lang="ru" class="notranslate" translate="no">
+  <head>
+    <meta name="google" content="notranslate">    
+    <meta charset="utf-8" />
+    <script src="./index.js"></script>
+    <title>Web Chat</title>
+    <h1>Web Chat</h1>
+    <style>
+      textarea {
+        resize: none;
+      }
+      chain {
+        resize: both;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Enter your name:</h3>
+    <textarea id="name" rows="1" style="vertical-align: middle;"></textarea>
+    <h3>Enter message:</h3>
+    <input class='message' type="button" checked value="Send message" onClick="sendMessage()"/>
+    <textarea id="message" rows="3" cols="50" style="vertical-align: middle;"></textarea>
+    <h2>Chain of messages:</h2>
+    <textarea id="chain" disabled="disabled" rows="30" cols="120" style="vertical-align: middle;"></textarea>
+    </br>
+    </br>
+    <input class='clear' type="button" checked value="Clear chain" onClick="clearChain()"/>
+  </body>
+</html>
+
+<!-- END OF 'index.html' FILE-->
