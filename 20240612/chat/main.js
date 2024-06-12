@@ -9,6 +9,8 @@ import http from "node:http";
 import {WebSocketServer} from "ws";
 import express from "express";
 
+let connected = 0;
+
 const clients = new Set();
 
 const app = express();
@@ -23,6 +25,7 @@ const wss = new WebSocketServer({server});
 
 wss.on("connection", (ws) => {
   clients.add(ws);
+  connected = connected + 1;
 
   ws.on("message", (message) => {
     ws.send(`${message}`);
@@ -34,6 +37,10 @@ wss.on("connection", (ws) => {
       cl.send(m);
     }
   }
+
+  ws.on('close', () => {
+    clients.delete(ws);
+  });
 
   ws.send("New client connected\n");
 })
