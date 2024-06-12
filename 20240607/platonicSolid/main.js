@@ -17,29 +17,16 @@ window.addEventListener("load", () => {
     let canvas = s;
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
-    let vert = [dc.vertex(), dc.vertex(), dc.vertex(), dc.vertex()];
-    let ind = [];
-  
-    vert[0].p = dc.vec3(0, 0, 0);
-    vert[1].p = dc.vec3(10, 0, 0);
-    vert[2].p = dc.vec3(0, 10, 0);
-    vert[3].p = dc.vec3(10, 10, 0);
-  
-    ind[0] = 0;
-    ind[1] = 1;
-    ind[2] = 2;
-  
-    ind[3] = 2;
-    ind[4] = 1;
-    ind[5] = 3;
-  
-    let prim = rnd.primCreate(rnd.gl.TRIANGLES, vert, 4, ind, 6);
+    let vert = [dc.vertex(0, 0, 0), dc.vertex(10, 0, 0), dc.vertex(0, 10, 0), dc.vertex(10, 10, 0)];
+    let ind = [0, 1, 2, 2, 1, 3];
+
+//    let prim = rnd.primCreate(rnd.gl.TRIANGLES, vert, 4, ind, 6);
+    let prim = rnd.primCreateCube();
 
     const draw = () => {
-      prim.draw();
-
       // drawing
       rnd.render();
+      prim.draw(dc.mat4().rotateY(rnd.timer.globalTime));
   
       // timer response
       rnd.timer.response();

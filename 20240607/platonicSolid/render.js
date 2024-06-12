@@ -5,6 +5,42 @@
  * PURPOSE     : Main render module java script file.
  */
 
+// Vertex shader
+`#version 300 es
+precision highp float;
+in vec3 InPosition;
+in vec3 InNormal;
+
+uniform mat4 MatrWVP;
+uniform mat4 MatrWInv;
+
+out vec3 DrawNormal;
+    
+void main( void )
+{
+  gl_Position = MatrWVP * vec4(InPosition, 1);
+  DrawNormal = normalize(mat3(MatrWInv) * InNormal);
+}
+`;
+
+// Fragment shader
+`#version 300 es
+precision highp float;
+in vec3 DrawNormal;
+
+uniform float Time;
+uniform mat4 MatrWVP;
+
+out vec4 OutColor;
+    
+void main( void )
+{
+  vec3 L = vec3(0, 0, 1);
+  vec3 N = normalize(faceforward(DrawNormal, -L, DrawNormal));
+  vec3 col = vec3(0.8, 0.47, 0.30) * dot(N, L);
+  OutColor = vec4(col, 1.0);
+}`;
+
 import * as dc from "./lib.js";
 
 class _anim {
@@ -14,14 +50,14 @@ class _anim {
     this.timer = new dc.timer();
     this.camera = dc.camera();
 
-    this.camera.set(dc.vec3(4.5), dc.vec3(0, 0, 0), dc.vec3(0, 1, 0));
+    this.camera.set(dc.vec3(0, 0, 4), dc.vec3(0), dc.vec3(0, 1, 0));
 
     this.camera.frameH = canvas.height;
     this.camera.frameW = canvas.width;
     this.camera.projSize = 0.1;
-    this.camera.projDist = 0.1;
+    this.camera.projSize = 0.1;
     this.camera.projFarClip = 1000;
-    this.camera.setSize(this.camera.frameW, this.camera.frameH);
+    this.camera.setProj(this.camera.projSize, this.camera.projSize, this.camera.projFarClip);
   } // End of 'constructor' function
 
   initGL() {

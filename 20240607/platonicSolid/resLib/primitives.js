@@ -8,9 +8,9 @@
 import {vec3, mat4} from "../lib.js";
 
 class _vertex {
-  constructor() {
-    this.p = new vec3();
-    this.n = new vec3();
+  constructor(x, y, z) {
+    this.p = vec3(x, y, z);
+    this.n = vec3();
   } // End of 'constructor' function
 } // End of '_vertex' class
 
@@ -26,7 +26,8 @@ class _primitive {
     this.ibuf = 0;
     this.va = rnd.gl.createVertexArray();
     
-    if (vert != null && noofv != 0)
+
+    if (vert != undefined && noofv != 0)
     {
       rnd.gl.bindVertexArray(this.va);
     
@@ -34,14 +35,14 @@ class _primitive {
       rnd.gl.bindBuffer(rnd.gl.ARRAY_BUFFER, this.vbuf);
       rnd.gl.bufferData(rnd.gl.ARRAY_BUFFER, new Float32Array(vert), rnd.gl.STATIC_DRAW);
     
-      rnd.gl.vertexAttribPointer(0, 3, rnd.gl.FLOAT, false, 3 * 4, 0);
-      rnd.gl.vertexAttribPointer(1, 3, rnd.gl.FLOAT, false, 3 * 4, 3 * 4);
+      rnd.gl.vertexAttribPointer(0, 3, rnd.gl.FLOAT, false, 24, 0);
+      rnd.gl.vertexAttribPointer(1, 3, rnd.gl.FLOAT, false, 24, 12);
     
       rnd.gl.enableVertexAttribArray(0);
       rnd.gl.enableVertexAttribArray(1);
     }
     
-    if (ind != null && noofi != 0) {
+    if (ind != undefined && noofi != 0) {
       this.ibuf = rnd.gl.createBuffer();
       rnd.gl.bindBuffer(rnd.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
       rnd.gl.bufferData(rnd.gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(ind), rnd.gl.STATIC_DRAW);
@@ -52,6 +53,10 @@ class _primitive {
     
     this.type = type;
     this.trans = new mat4();
+
+    if (ind != undefined) {
+      this.autoNormals();
+    }
   } // End of 'constructor' function
 
   draw(world) {
@@ -69,36 +74,37 @@ class _primitive {
     this.rnd.shader.apply();
 
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWVP")) != -1) {
-      this.rnd.gl.uniformMatrix4fv(loc, false, wvp.toArray(), 0);
+      this.rnd.gl.uniformMatrix4fv(loc, false, new Float32Array(wvp.toArray()));
     }
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrWInv")) != -1) {
-      this.rnd.gl.uniformMatrix4fv(loc, false, wnormal.toArray(), 16);
+      this.rnd.gl.uniformMatrix4fv(loc, false, new Float32Array(wnormal.toArray()));
     }
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "MatrW")) != -1) {
-      this.rnd.gl.uniformMatrix4fv(loc, false, w.toArray(), 16);
+      this.rnd.gl.uniformMatrix4fv(loc, false, new Float32Array(w.toArray()));
     }
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "Time")) != -1) {
-      this.rnd.gl.uniform1f(loc, this.rnd.timer.globalTime, 4);
+      this.rnd.gl.uniform1f(loc, this.rnd.timer.globalTime);
     }
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamLoc")) != -1) {
-      this.rnd.gl.uniform3fv(loc, this.rnd.camera.loc.toArray(), 12);
+      this.rnd.gl.uniform3fv(loc, new Float32Array(this.rnd.camera.loc.toArray()));
     }
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamRight")) != -1) {
-      this.rnd.gl.uniform3fv(loc, this.rnd.camera.right.toArray(), 12);
+      this.rnd.gl.uniform3fv(loc, new Float32Array(this.rnd.camera.right.toArray()));
     }
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamUp")) != -1) {
-      this.rnd.gl.uniform3fv(loc, this.rnd.camera.up.toArray(), 12);
+      this.rnd.gl.uniform3fv(loc, new Float32Array(this.rnd.camera.up.toArray()));
     }
     if ((loc = this.rnd.gl.getUniformLocation(this.rnd.shader.id, "CamDir")) != -1) {
-      this.rnd.gl.uniform3fv(loc, this.rnd.camera.dir.toArray(), 12);
+      this.rnd.gl.uniform3fv(loc, new Float32Array(this.rnd.camera.dir.toArray()));
     }
 
     this.rnd.gl.bindVertexArray(this.vs);
+    this.rnd.gl.bindBuffer(this.rnd.gl.ARRAY_BUFFER, this.vbuf);
     if (this.ibuf == 0) {
       this.rnd.gl.drawArrays(this.type, 0, this.numOfElements);
     } else {
       this.rnd.gl.bindBuffer(this.rnd.gl.ELEMENT_ARRAY_BUFFER, this.ibuf);
-      this.rnd.gl.drawElements(this.type, this.numOfElements, this.rnd.gl.UNSIGNED_INT, null);
+      this.rnd.gl.drawElements(this.type, this.numOfElements, this.rnd.gl.UNSIGNED_INT, 0);
     }
   } // End of 'draw' function
 
@@ -114,28 +120,28 @@ class _primitive {
     }
   } // End of 'free' function
 
-  autoNormals(vert, noofv, ind, noofi) {
+  autoNormals() {
     /* Set all vertex normals to zero */
-    for (let i = 0; i < noofv; i++) {
-      vert[i].n = vec3(0, 0, 0);
+    for (let i = 0; i < this.noofv; i++) {
+      this.vert[i].n = vec3(0, 0, 0);
     }
   
     /* Eval normal for every facet */
-    for (let i = 0; i < noofi; i += 3) {
-      let n0 = ind[i], n1 = ind[i + 1], n2 = ind[i + 2];
-      let p0 = vert[n0].p;
-      let p1 = vert[n1].p;
-      let p2 = vert[n2].p;
+    for (let i = 0; i < this.noofi; i += 3) {
+      let n0 = this.ind[i], n1 = this.ind[i + 1], n2 = this.ind[i + 2];
+      let p0 = this.vert[n0].p;
+      let p1 = this.vert[n1].p;
+      let p2 = this.vert[n2].p;
       let n = p1.sub(p0).cross(p2.sub(p0)).normalize();
   
-      vert[n0].n = vert[n0].n.add(n);
-      vert[n1].n = vert[n1].n.add(n);
-      vert[n2].n = vert[n2].n.add(n);
+      this.vert[n0].n = this.vert[n0].n.add(n);
+      this.vert[n1].n = this.vert[n1].n.add(n);
+      this.vert[n2].n = this.vert[n2].n.add(n);
     }
   
     /* Normalize all vertex normals */
-    for (let i = 0; i < noofv; i++) {
-      vert[i].n = vert[i].n.normalize();
+    for (let i = 0; i < this.noofv; i++) {
+      this.vert[i].n = this.vert[i].n.normalize();
     }
   }
 } // End of '_primitive' clas
