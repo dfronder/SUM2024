@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : index.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 12.06.2024
+ * LAST UPDATE : 13.06.2024
  * PURPOSE     : Main chat index java script file.
  */
 
@@ -10,7 +10,7 @@ let socket = new WebSocket("ws://localhost:8000");
 function clearChain() {
   let t = document.getElementById("chain");
   t.value = '';
-}
+} // End of 'clearChain' function
 
 function sendMessage() {
   let msg_area = document.getElementById("message");
@@ -21,8 +21,9 @@ function sendMessage() {
   let dateStr = `[${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}]`
   let str = dateStr + " " + name + ": " + msg + "\n";
   socket.send(str);
+  msg_area.value = '';
   return false;
-}
+} // End of 'sendMessage' function
 
 function getWSMessage() {
   socket.onmessage = (event) => {
@@ -31,7 +32,7 @@ function getWSMessage() {
     t.value += message;
     t.scrollTop = t.scrollHeight;
   }
-}
+} // End of 'getWSMessage' function
 
 getWSMessage();
 
