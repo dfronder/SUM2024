@@ -1,45 +1,9 @@
 /*
  * FILE NAME   : render.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 11.06.2024
+ * LAST UPDATE : 13.06.2024
  * PURPOSE     : Main render module java script file.
  */
-
-// Vertex shader
-`#version 300 es
-precision highp float;
-in vec3 InPosition;
-in vec3 InNormal;
-
-uniform mat4 MatrWVP;
-uniform mat4 MatrWInv;
-
-out vec3 DrawNormal;
-    
-void main( void )
-{
-  gl_Position = MatrWVP * vec4(InPosition, 1);
-  DrawNormal = normalize(mat3(MatrWInv) * InNormal);
-}
-`;
-
-// Fragment shader
-`#version 300 es
-precision highp float;
-in vec3 DrawNormal;
-
-uniform float Time;
-uniform mat4 MatrWVP;
-
-out vec4 OutColor;
-    
-void main( void )
-{
-  vec3 L = vec3(0, 0, 1);
-  vec3 N = normalize(faceforward(DrawNormal, -L, DrawNormal));
-  vec3 col = vec3(0.8, 0.47, 0.30) * dot(N, L);
-  OutColor = vec4(col, 1.0);
-}`;
 
 import * as dc from "./lib.js";
 
@@ -67,8 +31,10 @@ class _anim {
   } // End of 'initGL' function
 
   render() {
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-    this.gl.clear(this.gl.DEPTH_BUFFER_BIT);
+    this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+    this.camera.setProj(this.camera.projDist, this.camera.projSize, this.camera.projFarClip);
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+    this.gl.clearDepth(1.0);
   } // End of 'render' function
 
   primCreate(...args) {
