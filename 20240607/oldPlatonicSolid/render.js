@@ -14,7 +14,7 @@ class _anim {
     this.timer = new dc.timer();
     this.camera = dc.camera();
 
-    this.camera.set(dc.vec3(4.5), dc.vec3(0), dc.vec3(0, 1, 0));
+    this.camera.set(dc.vec3(0, 0, 4), dc.vec3(0), dc.vec3(0, 1, 0));
 
     this.camera.frameH = canvas.height;
     this.camera.frameW = canvas.width;
@@ -44,6 +44,26 @@ class _anim {
   shaderCreate(...args) {
     return dc.shader(this, ...args);
   } // End of 'shaderCreate' function
+
+  primCreateTetrahedron() {
+    return new dc.tetrahedron(this);
+  } // End of 'primCreateTetrahedron' function
+
+  primCreateCube() {
+    return new dc.cube(this);
+  } // End of 'primCreateTetrahedron' function
+
+  primCreateOctahedron() {
+    return new dc.octahedron(this);
+  } // End of 'primCreateTetrahedron' function
+  
+  primCreateDodecahedron() {
+    return new dc.dodecahedron(this);
+  } // End of 'primCreateTetrahedron' function
+  
+  primCreateIcosahedron() {
+    return new dc.icosahedron(this);
+  } // End of 'primCreateTetrahedron' function
 } // End of '_anim' function
 
 export function anim(...args) {

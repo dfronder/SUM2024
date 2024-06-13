@@ -7,7 +7,10 @@
 
 import * as dc from "./lib.js";
 let areas = [document.getElementById("myCan"), 
-             document.getElementById("myCan2")];
+             document.getElementById("myCan2"), 
+             document.getElementById("myCan3"), 
+             document.getElementById("myCan4"), 
+             document.getElementById("myCan5")];
 
 function main() {
   // 'myCan'
@@ -15,25 +18,20 @@ function main() {
     let canvas = areas[0];
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
+    let vert = [dc.vertex(dc.vec3(0, 0, 0)), dc.vertex(dc.vec3(2, 0, 0)), dc.vertex(dc.vec3(0, 2, 0)), dc.vertex(dc.vec3(2, 2, 0))];
+    let ind = [0, 1, 2, 2, 1, 3];
+    let matr = dc.mat4();
 
-    const tetrahedron = new dc.tetrahedron(rnd);
-    const tetraprim = tetrahedron.makePrim(rnd, dc.mat4());
+    let prim = rnd.primCreate(rnd.gl.TRIANGLE, vert, 4, ind, 6);
 
     const draw = () => {
-      // count rotation matrices
-      let matx = dc.mat4().rotateX(30 * rnd.timer.globalTime);
-      let maty = dc.mat4().rotateY(30 * rnd.timer.globalTime);
-      let matz = dc.mat4().rotateZ(30 * rnd.timer.globalTime);
-
       // drawing
       rnd.render();
-
+      prim.draw(matr.rotateY(rnd.timer.globalTime));
+    
       // timer response
       rnd.timer.response();
   
-      // draw tetrahedron
-      tetraprim.render(rnd, matx.mul(maty.mul(matz)));
-
       // animation register
       window.requestAnimationFrame(draw);
     };
@@ -44,37 +42,25 @@ function main() {
     let canvas = areas[1];
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
-
-    const cube = new dc.cube(rnd);
-    const cubeprim = cube.makePrim(rnd, dc.mat4());
-
+  
     const draw = () => {
-      // count rotation matrices
-      let matx = dc.mat4().rotateX(30 * rnd.timer.globalTime);
-      let maty = dc.mat4().rotateY(30 * rnd.timer.globalTime);
-      let matz = dc.mat4().rotateZ(30 * rnd.timer.globalTime);
-
       // drawing
       rnd.render();
 
       // timer response
       rnd.timer.response();
-
-      // draw cube
-      cubeprim.render(rnd, matx.mul(maty.mul(matz)));
-
+  
       // animation register
       window.requestAnimationFrame(draw);
     };
     draw();
   });  
-/*
   // 'myCan3'
   window.addEventListener("load", () => {
     let canvas = areas[2];
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
-
+  
     const draw = () => {
       // drawing
       rnd.render();
@@ -92,7 +78,7 @@ function main() {
     let canvas = areas[3];
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
-
+  
     const draw = () => {
       // drawing
       rnd.render();
@@ -110,11 +96,11 @@ function main() {
     let canvas = areas[4];
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
-
+  
     const draw = () => {
       // drawing
       rnd.render();
-
+    
       // timer response
       rnd.timer.response();
   
@@ -123,7 +109,6 @@ function main() {
     };
     draw();
   });
-*/
 } // End of 'main' function
 
 main();

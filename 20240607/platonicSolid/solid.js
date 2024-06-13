@@ -6,138 +6,235 @@
  */
 
 import {vec3} from "./mathLib/vec3.js";
+import {mat4} from "./mathLib/mat4.js";
 import {vertex} from "./lib.js";
+import {primitive} from "./resLib/primitives.js";
 
-export function tetrahedron(rnd) {
-  const sqrt3 = Math.sqrt(3);
-  const sqrt6 = Math.sqrt(6);
-  const vert = [vertex(vec3(0, 0, -sqrt3 / 3)), vertex(vec3(sqrt6 / 6, 0, sqrt3 / 6)), vertex(vec3(-sqrt6 / 6, 0, sqrt3 / 6)), vertex(vec3(0, sqrt6 / 3, 0))];
-  const ind = [0, 1, 2, 0, 3, 2, 2, 3, 1, 1, 3, 0];
-  const vertexes = [];
-  for (let i of ind) {
-    let vrtx = vertex(vec3(vert[i].p));
-    vrtx.n = vec3(vert[i].n); 
-    vertexes.push(vrtx);
+function D2R(L) {
+  return L * (Math.PI / 180.0);
+}
+
+class Figure {
+  constructor(rnd) {
+    this.rnd = rnd;
+    this.vertexes = [];
+    this.matrix = mat4();
   }
 
-  return rnd.primCreate(rnd.gl.TRIANGLES, vertexes, vertexes.length, ind, ind.length);
-} // End of 'tetrahedron' function
+  makePrim(matrix) {
+    let indicies = [];
+    let vertexes = [];
+    let j = 0;
+    this.matrix = matrix;
 
-export function cube(rnd) {
-  const vert = [vertex(vec3(-0.5)), vertex(vec3(0.5, -0.5, -0.5)), vertex(vec3(-0.5, 0.5, -0.5)), 
-                vertex(vec3(-0.5, -0.5, 0.5)), vertex(vec3(0.5, 0.5, -0.5)), 
-                vertex(vec3(0.5, -0.5, 0.5)), vertex(vec3(-0.5, 0.5, 0.5)), vertex(vec3(0.5))];
-  const ind = [0, 1, 2, 
-               1, 2, 4, 
-               1, 4, 7, 
-               1, 7, 5, 
-               7, 5, 3, 
-               7, 3, 6,
-               0, 1, 3,
-               3, 1, 5,
-               6, 3, 0,
-               6, 0, 2,
-               2, 6, 7,
-               2, 7, 4];
-  const vertexes = [];
-  for (let i of ind) {
-    let vrtx = vertex(vec3(vert[i].p));
-    vrtx.n = vec3(vert[i].n); 
-    vertexes.push(vrtx);
-  }
+    for (let edge of this.vertexes) {
+      for (let v of edge) {
+        vertexes.push(vertex(v, vec3(0)));
+      }
 
-  return rnd.primCreate(rnd.gl.TRIANGLES, vertexes, vertexes.length, ind, ind.length);
-} // End of 'cube' function
+      for (let i = 2; i < edge.length; i++) {
+        indicies.push(j + 0);
+        indicies.push(j + i - 1);
+        indicies.push(j + i);
+      }
+      j += edge.length;
+    }
 
-export function octahedron(rnd) {
-  const sqrt2 = Math.sqrt(2) / 2;
-  const vert = [vertex(vec3(sqrt2, 0, 0)), vertex(vec3(-sqrt2, 0, 0)),
-                vertex(vec3(0, 0, sqrt2)), vertex(vec3(0, 0, -sqrt2)), 
-                vertex(vec3(0, sqrt2, 0)), vertex(vec3(0, -sqrt2, 0))];
-  const ind = [0, 3, 4, 0, 2, 4, 2, 4, 1, 1, 3, 4,
-               1, 3, 5, 3, 5, 0, 0, 5, 2, 2, 5, 1];
-  const vertexes = [];
-  for (let i of ind) {
-    let vrtx = vertex(vec3(vert[i].p));
-    vrtx.n = vec3(vert[i].n); 
-    vertexes.push(vrtx);
+    return primitive(this.rnd, vertexes, indicies);
   }
+}
 
-  return rnd.primCreate(rnd.gl.TRIANGLES, vertexes, vertexes.length, ind, ind.length);
-} // End of 'octahedron' function
+export class tetrahedron extends Figure {
+  constructor(rnd) {
+    super(rnd);
+    const a = 1,
+      r = Math.sqrt(a * a - (a * a) / 4) / 3,
+      h = Math.sqrt(a * a - 4 * r * r),
+      top = vec3(0, 0, (3 * h) / 4),
+      left = vec3(-a / 2, -r, -h / 4),
+      right = vec3(a / 2, -r, -h / 4),
+      front = vec3(0, 2 * r, -h / 4);
 
-export function dodecahedron(rnd) {
-  const icovert = [];
-  let angle = 0;
-  for (let i = 0; i < 5; i++) {
-    icovert.push(vec3(Math.cos(angle), -0.5, Math.sin(angle)));
-    angle += 2 * Math.PI / 5;
+    this.vertexes = [
+      [left, front, top],
+      [left, right, top],
+      [right, front, top],
+      [right, front, left],
+    ];
   }
-  angle = Math.PI;
-  for (let i = 0; i < 5; i++) {
-    icovert.push(vec3(Math.cos(angle), 0.5, Math.sin(angle)));
-    angle += 2 * Math.PI / 5;
-  }
-  icovert.push(vec3(0, Math.sqrt(5) / 2, 0));
-  icovert.push(vec3(0, -Math.sqrt(5) / 2, 0));
-  const icoind = [8, 7, 0, 0, 4, 7, 7, 6, 4, 4, 3, 6, 6, 5, 
-                  3, 3, 2, 5, 5, 9, 2, 2, 1, 9, 9, 8, 1, 1, 0, 8,
-                  5, 6, 10, 6, 7, 10, 7, 8, 10, 8, 9, 10, 9, 5, 10,
-                  0, 1, 11, 1, 2, 11, 2, 3, 11, 3, 4, 11, 4, 0, 11];
-  const icovertexes = [];
-  for (let i of icoind) 
-    icovertexes.push(vec3(icovert[i]));
-  const vert = [];
-  for (let i = 0; i < icoind.length; i += 3)
-    vert.push(vertex(vec3(icovertexes[i].add(icovertexes[i + 1]).add(icovertexes[i + 2])).divNum(3)));
-  const ind = [0, 1, 2, 0, 2, 11, 0, 11, 12,
-               11, 2, 3, 11, 3, 4, 11, 4, 10,
-               10, 4, 5, 10, 5, 6, 10, 6, 14, 
-               14, 6, 7, 14, 7, 8, 14, 8, 13,
-               13, 8, 9, 13, 9, 0, 13, 0, 12,
-               2, 1, 3, 1, 3, 19, 1, 15, 19,
-               3, 19, 18, 3, 18, 5, 3, 5, 4,
-               5, 18, 17, 5, 6, 17, 6, 17, 7,
-               7, 17, 16, 7, 16, 8, 16, 8, 9,
-               9, 16, 15, 9, 15, 1, 9, 1, 0,
-               10, 11, 14, 11, 14, 13, 11, 13, 12,
-               17, 18, 19, 17, 19, 15, 17, 15, 16];
-  const vertexes = [];
-  for (let i of ind) {
-    let vrtx = vertex(vec3(vert[i].point));
-    vrtx.normal = vec3(vert[i].normal); 
-    vertexes.push(vrtx);
-  }
+}
 
-  return rnd.primCreate(rnd.gl.TRIANGLES, vertexes, vertexes.length, ind, ind.length);
-} // End of 'dodecahedron' function
+export class cube extends Figure {
+  constructor(rnd) {
+    super(rnd);
+    this.vertexes = [
+      [
+        vec3(-0.5, -0.5, -0.5),
+        vec3(-0.5, 0.5, -0.5),
+        vec3(0.5, 0.5, -0.5),
+        vec3(0.5, -0.5, -0.5),
+      ],
+      [
+        vec3(-0.5, -0.5, 0.5),
+        vec3(-0.5, 0.5, 0.5),
+        vec3(0.5, 0.5, 0.5),
+        vec3(0.5, -0.5, 0.5),
+      ],
+      [
+        vec3(-0.5, -0.5, -0.5),
+        vec3(-0.5, -0.5, 0.5),
+        vec3(-0.5, 0.5, 0.5),
+        vec3(-0.5, 0.5, -0.5),
+      ],
+      [
+        vec3(0.5, -0.5, -0.5),
+        vec3(0.5, -0.5, 0.5),
+        vec3(0.5, 0.5, 0.5),
+        vec3(0.5, 0.5, -0.5),
+      ],
+      [
+        vec3(-0.5, -0.5, -0.5),
+        vec3(-0.5, -0.5, 0.5),
+        vec3(0.5, -0.5, 0.5),
+        vec3(0.5, -0.5, -0.5),
+      ],
+      [
+        vec3(-0.5, 0.5, -0.5),
+        vec3(-0.5, 0.5, 0.5),
+        vec3(0.5, 0.5, 0.5),
+        vec3(0.5, 0.5, -0.5),
+      ],
+    ];
+  }
+}
 
-export function icosahedron(rnd) {
-  const vert = [];
-  let angle = 0;
-  for (let i = 0; i < 5; i++) {
-    vert.push(vertex(vec3(Math.cos(angle), -0.5, Math.sin(angle))));
-    angle += 2 * Math.PI / 5;
+export class octahedron extends Figure {
+  constructor(rnd) {
+    super(rnd);
+    const left = vec3(-0.5, 0, 0),
+      far = vec3(0, 0.5, 0),
+      right = vec3(0.5, 0, 0),
+      near = vec3(0, -0.5, 0),
+      down = vec3(0, 0, -0.5),
+      up = vec3(0, 0, 0.5);
+    this.vertexes = [
+      [near, left, up],
+      [near, right, up],
+      [near, right, down],
+      [near, left, down],
+      [left, far, up],
+      [left, far, down],
+      [right, far, up],
+      [right, far, down],
+    ];
   }
-  angle = Math.PI;
-  for (let i = 0; i < 5; i++) {
-    vert.push(vertex(vec3(Math.cos(angle), 0.5, Math.sin(angle))));
-    angle += 2 * Math.PI / 5;
-  }
-  vert.push(vertex(vec3(0, Math.sqrt(5) / 2, 0)));
-  vert.push(vertex(vec3(0, -Math.sqrt(5) / 2, 0)));
-  const ind = [8, 7, 0, 0, 4, 7, 7, 6, 4, 4, 3, 6, 6, 5, 
-               3, 3, 2, 5, 5, 9, 2, 2, 1, 9, 9, 8, 1, 1, 0, 8,
-               5, 6, 10, 6, 7, 10, 7, 8, 10, 8, 9, 10, 9, 5, 10,
-               0, 1, 11, 1, 2, 11, 2, 3, 11, 3, 4, 11, 4, 0, 11];
-  const vertexes = [];
-  for (let i of ind) {
-    let vrtx = vertex(vec3(vert[i].p));
-    vrtx.n = vec3(vert[i].n); 
-    vertexes.push(vrtx);
-  }
+}
 
-  return rnd.primCreate(rnd.gl.TRIANGLES, vertexes, vertexes.length, ind, ind.length);
-} // End of 'icosahedron' function
+export class dodecahedron extends Figure {
+  constructor(rnd) {
+    super(rnd);
+    const cos36 = Math.cos(D2R(36)) / 2,
+      sin36 = Math.sin(D2R(36)) / 2,
+      cos72 = Math.cos(D2R(72)) / 2,
+      sin72 = Math.sin(D2R(72)) / 2,
+      d = Math.sqrt(2 * (cos36 - sin36)) / 2,
+      r = Math.sqrt((d * d) / 4 + 1) / 2,
+      down = vec3(0, 0, -r),
+      up = vec3(0, 0, r),
+      dr = vec3(1 / 2, 0, -d),
+      dru = vec3(cos72, sin72, -d),
+      dlu = vec3(-cos36, sin36, -d),
+      dld = vec3(-cos36, -sin36, -d),
+      drd = vec3(cos72, -sin72, -d),
+      ul = vec3(-1 / 2, 0, d),
+      ulu = vec3(-cos72, sin72, d),
+      uru = vec3(cos36, sin36, d),
+      urd = vec3(cos36, -sin36, d),
+      uld = vec3(-cos72, -sin72, d);
+
+    const v11 = up.add(ul.add(ulu)).divNum(3),
+      v12 = up.add(ulu.add(uru)).divNum(3),
+      v13 = up.add(uru.add(urd)).divNum(3),
+      v14 = up.add(urd.add(uld)).divNum(3),
+      v15 = up.add(uld.add(ul)).divNum(3),
+      v21 = dr.add(uru.add(dru)).divNum(3),
+      v31 = uru.add(dru.add(ulu)).divNum(3),
+      v22 = dru.add(ulu.add(dlu)).divNum(3),
+      v32 = ulu.add(dlu.add(ul)).divNum(3),
+      v23 = dlu.add(ul.add(dld)).divNum(3),
+      v33 = ul.add(dld.add(uld)).divNum(3),
+      v24 = dld.add(uld.add(drd)).divNum(3),
+      v34 = uld.add(drd.add(urd)).divNum(3),
+      v25 = drd.add(urd.add(dr)).divNum(3),
+      v35 = urd.add(dr.add(uru)).divNum(3),
+      v41 = down.add(dr.add(dru)).divNum(3),
+      v42 = down.add(dru.add(dlu)).divNum(3),
+      v43 = down.add(dlu.add(dld)).divNum(3),
+      v44 = down.add(dld.add(drd)).divNum(3),
+      v45 = down.add(drd.add(dr)).divNum(3);
+
+    this.vertexes = [
+      [v11, v12, v13, v14, v15],
+      [v11, v12, v31, v22, v32],
+      [v12, v13, v35, v21, v31],
+      [v13, v14, v34, v25, v35],
+      [v14, v15, v33, v24, v34],
+      [v15, v11, v32, v23, v33],
+      [v41, v42, v22, v31, v21],
+      [v42, v43, v23, v32, v22],
+      [v43, v44, v24, v33, v23],
+      [v44, v45, v25, v34, v24],
+      [v45, v41, v21, v35, v25],
+      [v41, v42, v43, v44, v45],
+    ];
+  }
+}
+
+export class icosahedron extends Figure {
+  constructor(rnd) {
+    super(rnd);
+    const cos36 = Math.cos(D2R(36)) / 2,
+      sin36 = Math.sin(D2R(36)) / 2,
+      cos72 = Math.cos(D2R(72)) / 2,
+      sin72 = Math.sin(D2R(72)) / 2,
+      d = Math.sqrt(2 * (cos36 - sin36)) / 2,
+      r = Math.sqrt((d * d) / 4 + 1) / 2,
+      down = vec3(0, 0, -r),
+      up = vec3(0, 0, r),
+      dr = vec3(1 / 2, 0, -d),
+      dru = vec3(cos72, sin72, -d),
+      dlu = vec3(-cos36, sin36, -d),
+      dld = vec3(-cos36, -sin36, -d),
+      drd = vec3(cos72, -sin72, -d),
+      ul = vec3(-1 / 2, 0, d),
+      ulu = vec3(-cos72, sin72, d),
+      uru = vec3(cos36, sin36, d),
+      urd = vec3(cos36, -sin36, d),
+      uld = vec3(-cos72, -sin72, d);
+
+    this.vertexes = [
+      [down, dr, dru], // down corner
+      [down, dru, dlu],
+      [down, dlu, dld],
+      [down, dld, drd],
+      [down, drd, dr],
+      [dr, uru, dru], // center start
+      [uru, dru, ulu],
+      [dru, ulu, dlu],
+      [ulu, dlu, ul],
+      [dlu, ul, dld],
+      [ul, dld, uld],
+      [dld, uld, drd],
+      [uld, drd, urd],
+      [drd, urd, dr],
+      [urd, dr, uru], // center end
+      [up, ul, ulu], // up corner
+      [up, ulu, uru],
+      [up, uru, urd],
+      [up, urd, uld],
+      [up, uld, ul],
+    ];
+  }
+}
 
 /* END OF 'solid.js' FILE */
