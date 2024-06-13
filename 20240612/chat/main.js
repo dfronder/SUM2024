@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : main.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 12.06.2024
+ * LAST UPDATE : 13.06.2024
  * PURPOSE     : Main chat server java script file.
  */
 
@@ -35,8 +35,6 @@ wss.on("connection", (ws) => {
   ws.on('close', () => {
     clients.delete(ws);
   });
-
-//  ws.send("New client connected\n");
 })
 
 const host = `localhost`;
