@@ -47,7 +47,7 @@ class solid {
 export class tetrahedron extends solid {
   constructor(rnd) {
     super(rnd);
-    const a = 1.5,
+    const a = 1,
       r = Math.sqrt(a * a - (a * a) / 4) / 3,
       h = Math.sqrt(a * a - 4 * r * r),
       top = vec3(0, 0, (3 * h) / 4),
@@ -163,41 +163,29 @@ export class icosahedron extends solid {
       cos72 = Math.cos(D2R(72)) / 2,
       sin72 = Math.sin(D2R(72)) / 2,
       d = Math.sqrt(2 * (cos36 - sin36)) / 2,
-      r = Math.sqrt((d * d) / 4 + 1) / 2,
-      down = vec3(0, 0, -r),
-      up = vec3(0, 0, r),
-      dr = vec3(1 / 2, 0, -d),
-      dru = vec3(cos72, sin72, -d),
-      dlu = vec3(-cos36, sin36, -d),
-      dld = vec3(-cos36, -sin36, -d),
-      drd = vec3(cos72, -sin72, -d),
-      ul = vec3(-1 / 2, 0, d),
-      ulu = vec3(-cos72, sin72, d),
-      uru = vec3(cos36, sin36, d),
-      urd = vec3(cos36, -sin36, d),
-      uld = vec3(-cos72, -sin72, d);
+      r = Math.sqrt((d * d) / 4 + 1) / 2;
 
     this.vertexes = [
-      [down, dr, dru], // down corner
-      [down, dru, dlu],
-      [down, dlu, dld],
-      [down, dld, drd],
-      [down, drd, dr],
-      [dr, uru, dru], // center start
-      [uru, dru, ulu],
-      [dru, ulu, dlu],
-      [ulu, dlu, ul],
-      [dlu, ul, dld],
-      [ul, dld, uld],
-      [dld, uld, drd],
-      [uld, drd, urd],
-      [drd, urd, dr],
-      [urd, dr, uru], // center end
-      [up, ul, ulu], // up corner
-      [up, ulu, uru],
-      [up, uru, urd],
-      [up, urd, uld],
-      [up, uld, ul]
+      [vec3(0, 0, -r), vec3(0.5, 0, -d), vec3(cos72, sin72, -d)],
+      [vec3(0, 0, -r), vec3(cos72, sin72, -d), vec3(-cos36, sin36, -d)],
+      [vec3(0, 0, -r), vec3(-cos36, sin36, -d), vec3(-cos36, -sin36, -d)],
+      [vec3(0, 0, -r), vec3(-cos36, -sin36, -d), vec3(cos72, -sin72, -d)],
+      [vec3(0, 0, -r), vec3(cos72, -sin72, -d), vec3(0.5, 0, -d)],
+      [vec3(0.5, 0, -d), vec3(cos36, sin36, d), vec3(cos72, sin72, -d)],
+      [vec3(cos36, sin36, d), vec3(cos72, sin72, -d), vec3(-cos72, sin72, d)],
+      [vec3(cos72, sin72, -d), vec3(-cos72, sin72, d), vec3(-cos36, sin36, -d)],
+      [vec3(-cos72, sin72, d), vec3(-cos36, sin36, -d), vec3(-0.5, 0, d)],
+      [vec3(-cos36, sin36, -d), vec3(-0.5, 0, d), vec3(-cos36, -sin36, -d)],
+      [vec3(-0.5, 0, d), vec3(-cos36, -sin36, -d), vec3(-cos72, -sin72, d)],
+      [vec3(-cos36, -sin36, -d), vec3(-cos72, -sin72, d), vec3(cos72, -sin72, -d)],
+      [vec3(-cos72, -sin72, d), vec3(cos72, -sin72, -d), vec3(cos36, -sin36, d)],
+      [vec3(cos72, -sin72, -d), vec3(cos36, -sin36, d), vec3(0.5, 0, -d)],
+      [vec3(cos36, -sin36, d), vec3(0.5, 0, -d), vec3(cos36, sin36, d)],
+      [vec3(0, 0, r), vec3(-0.5, 0, d), vec3(-cos72, sin72, d)],
+      [vec3(0, 0, r), vec3(-cos72, sin72, d), vec3(cos36, sin36, d)],
+      [vec3(0, 0, r), vec3(cos36, sin36, d), vec3(cos36, -sin36, d)],
+      [vec3(0, 0, r), vec3(cos36, -sin36, d), vec3(-cos72, -sin72, d)],
+      [vec3(0, 0, r), vec3(-cos72, -sin72, d), vec3(-0.5, 0, d)]
     ];
   }
 }

@@ -12,6 +12,6 @@ export {camera} from "./mathLib/camera.js";
 export {anim} from "./render.js";
 export {timer} from "./timer/timer.js";
 export {shader} from "./resLib/shaders.js";
-export {cube, dodecahedron, icosahedron, octahedron, tetrahedron} from "./solid.js"
+export {cube, dodecahedron, icosahedron, octahedron, tetrahedron} from "./solid.js";
 
 /* END OF 'lib.js' FILE */

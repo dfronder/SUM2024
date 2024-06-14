@@ -1,22 +1,22 @@
 /*
  * FILE NAME   : main.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 13.06.2024
+ * LAST UPDATE : 14.06.2024
  * PURPOSE     : Main java script file.
  */
 
 import * as dc from "./lib.js";
-let areas = [document.getElementById("myCan"), 
-             document.getElementById("myCan2"),
-             document.getElementById("myCan3"), 
-             document.getElementById("myCan4"), 
-             document.getElementById("myCan5")];
+const areas = [document.getElementById("myCan"), 
+               document.getElementById("myCan2"),
+               document.getElementById("myCan3"), 
+               document.getElementById("myCan4"), 
+               document.getElementById("myCan5")];
 
 function main() {
   // 'myCan'
   window.addEventListener("load", () => {
     let canvas = areas[0];
-    let rnd = dc.anim(canvas);
+    const rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
 
     const prim = rnd.primCreateTetrahedron();
@@ -27,9 +27,12 @@ function main() {
       let maty = dc.mat4().rotateY(30 * rnd.timer.globalTime);
       let matz = dc.mat4().rotateZ(30 * rnd.timer.globalTime);
 
+      // scale matrix
+      let mx = dc.mat4().scale(dc.vec3(1.8));
+
       // drawing
       rnd.render();
-      prim.draw(matx.mul(maty.mul(matz)));
+      prim.draw(mx.mul(matx.mul(maty.mul(matz))));
 
       // timer response
       rnd.timer.response();
@@ -79,9 +82,12 @@ function main() {
       let maty = dc.mat4().rotateY(30 * rnd.timer.globalTime);
       let matz = dc.mat4().rotateZ(30 * rnd.timer.globalTime);
 
+      // scale matrix
+      let mx = dc.mat4().scale(dc.vec3(1.5));
+
       // drawing
       rnd.render();
-      prim.draw(matx.mul(maty.mul(matz)));
+      prim.draw(mx.mul(matx.mul(maty.mul(matz))));
 
       // timer response
       rnd.timer.response();
@@ -97,9 +103,20 @@ function main() {
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
 
+    const prim = rnd.primCreateDodecahedron();
+
     const draw = () => {
+      // count rotation matrices
+      let matx = dc.mat4().rotateX(30 * rnd.timer.globalTime);
+      let maty = dc.mat4().rotateY(30 * rnd.timer.globalTime);
+      let matz = dc.mat4().rotateZ(30 * rnd.timer.globalTime);
+
+      // scale matrix
+      let mx = dc.mat4().scale(dc.vec3(2.0));
+
       // drawing
       rnd.render();
+      prim.draw(mx.mul(matx.mul(maty.mul(matz))));
 
       // timer response
       rnd.timer.response();
@@ -115,9 +132,20 @@ function main() {
     let rnd = dc.anim(canvas);
     rnd.shader = rnd.shaderCreate("default");
 
+    const prim = rnd.primCreateIcosahedron();
+
     const draw = () => {
+      // count rotation matrices
+      let matx = dc.mat4().rotateX(30 * rnd.timer.globalTime);
+      let maty = dc.mat4().rotateY(30 * rnd.timer.globalTime);
+      let matz = dc.mat4().rotateZ(30 * rnd.timer.globalTime);
+
+      // scale matrix
+      let mx = dc.mat4().scale(dc.vec3(1.5));
+
       // drawing
       rnd.render();
+      prim.draw(mx.mul(matx.mul(maty.mul(matz))));
 
       // timer response
       rnd.timer.response();

@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : vec3.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 11.06.2024
+ * LAST UPDATE : 14.06.2024
  * PURPOSE     : Vectors (x, y, z) java script library file.
  */
 
@@ -36,7 +36,7 @@ class _vec3 {
 
   add(v) {
     if (typeof v == 'number') {
-      return vec3(this.x + x, this.y + y, this.z + z);
+      return vec3(this.x + v, this.y + v, this.z + v);
     }
     return vec3(this.x + v.x, this.y + v.y, this.z + v.z);
   } // End of 'add' function
@@ -73,6 +73,18 @@ class _vec3 {
   neg() {
     return vec3(-this.x, -this.y, -this.z);
   } // End of 'neg' function
+
+  pointTransform(m) {
+    return vec3(this.x * m.m[0][0] + this.y * m.m[1][0] + this.z * m.m[2][0] + m.m[3][0],
+                this.x * m.m[0][1] + this.y * m.m[1][1] + this.z * m.m[2][1] + m.m[3][1],
+                this.x * m.m[0][2] + this.y * m.m[1][2] + this.z * m.m[2][2] + m.m[3][2]);
+  } // End of 'pointTransform' function
+
+  vectorTransform(m) {
+    return vec3(this.x * m.m[0][0] + this.y * m.m[1][0] + this.z * m.m[2][0],
+                this.x * m.m[0][1] + this.y * m.m[1][1] + this.z * m.m[2][1],
+                this.x * m.m[0][2] + this.y * m.m[1][2] + this.z * m.m[2][2]);
+  } // End of 'vectorTransform' function
 } // End of '_vec3' class
 
 export function vec3(...args) {

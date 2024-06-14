@@ -9,6 +9,7 @@ import * as dc from "./lib.js";
 
 class _anim {
   constructor(canvas) {
+    this.canvas = canvas;
     this.gl = canvas.getContext("webgl2");
     this.initGL();
     this.timer = new dc.timer();
@@ -18,8 +19,9 @@ class _anim {
     this.camera.projSize = 0.1;
     this.camera.projSize = 0.1;
     this.camera.projFarClip = 1000;
+    this.loc = dc.vec3(1.5)
 
-    this.camera.set(dc.vec3(2.0), dc.vec3(0), dc.vec3(0, 1, 0));
+    this.camera.set(this.loc, dc.vec3(0), dc.vec3(0, 1, 0));
     this.camera.setProj(this.camera.projSize, this.camera.projSize, this.camera.projFarClip);
   } // End of 'constructor' function
 
@@ -29,9 +31,12 @@ class _anim {
     this.gl.clearColor(0.30, 0.47, 0.8, 1);
   } // End of 'initGL' function
 
+  inputResponse(event) {
+  } // End of 'inputResponse' function
+
   render() {
-    //  this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-    this.camera.setProj(this.camera.projDist, this.camera.projSize, this.camera.projFarClip);
+    this.camera.set(this.loc, dc.vec3(0), dc.vec3(0, 1, 0));
+    this.camera.setProj(this.camera.projSize, this.camera.projSize, this.camera.projFarClip);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     this.gl.clearDepth(1.0);
   } // End of 'render' function
