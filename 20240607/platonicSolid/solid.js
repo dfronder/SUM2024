@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : solid.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 13.06.2024
+ * LAST UPDATE : 14.06.2024
  * PURPOSE     : Platonic solid javascript library.
  */
 
@@ -12,14 +12,14 @@ import {primitive} from "./resLib/primitives.js";
 
 function D2R(L) {
   return L * (Math.PI / 180.0);
-}
+} // End of 'D2R' function
 
-class Figure {
+class solid {
   constructor(rnd) {
     this.rnd = rnd;
     this.vertexes = [];
     this.matrix = mat4();
-  }
+  } // End of 'constructor' function
 
   makePrim(matrix) {
     let indicies = [];
@@ -40,14 +40,14 @@ class Figure {
       j += edge.length;
     }
 
-    return primitive(this.rnd, vertexes, indicies);
-  }
-}
+    return primitive(this.rnd, this.rnd.gl.TRIANGLES, vertexes, indicies);
+  } // End of 'makePrim' function
+} // End of 'solid' class
 
-export class tetrahedron extends Figure {
+export class tetrahedron extends solid {
   constructor(rnd) {
     super(rnd);
-    const a = 1,
+    const a = 1.5,
       r = Math.sqrt(a * a - (a * a) / 4) / 3,
       h = Math.sqrt(a * a - 4 * r * r),
       top = vec3(0, 0, (3 * h) / 4),
@@ -61,76 +61,41 @@ export class tetrahedron extends Figure {
       [right, front, top],
       [right, front, left],
     ];
-  }
-}
+  } // End of 'constructor' function
+} // End of 'tetrahedron' class
 
-export class cube extends Figure {
+export class cube extends solid {
   constructor(rnd) {
     super(rnd);
     this.vertexes = [
-      [
-        vec3(-0.5, -0.5, -0.5),
-        vec3(-0.5, 0.5, -0.5),
-        vec3(0.5, 0.5, -0.5),
-        vec3(0.5, -0.5, -0.5),
-      ],
-      [
-        vec3(-0.5, -0.5, 0.5),
-        vec3(-0.5, 0.5, 0.5),
-        vec3(0.5, 0.5, 0.5),
-        vec3(0.5, -0.5, 0.5),
-      ],
-      [
-        vec3(-0.5, -0.5, -0.5),
-        vec3(-0.5, -0.5, 0.5),
-        vec3(-0.5, 0.5, 0.5),
-        vec3(-0.5, 0.5, -0.5),
-      ],
-      [
-        vec3(0.5, -0.5, -0.5),
-        vec3(0.5, -0.5, 0.5),
-        vec3(0.5, 0.5, 0.5),
-        vec3(0.5, 0.5, -0.5),
-      ],
-      [
-        vec3(-0.5, -0.5, -0.5),
-        vec3(-0.5, -0.5, 0.5),
-        vec3(0.5, -0.5, 0.5),
-        vec3(0.5, -0.5, -0.5),
-      ],
-      [
-        vec3(-0.5, 0.5, -0.5),
-        vec3(-0.5, 0.5, 0.5),
-        vec3(0.5, 0.5, 0.5),
-        vec3(0.5, 0.5, -0.5),
-      ],
+      [vec3(-0.5, -0.5, -0.5), vec3(-0.5, 0.5, -0.5), vec3(0.5, 0.5, -0.5), vec3(0.5, -0.5, -0.5)],
+      [vec3(-0.5, -0.5, 0.5), vec3(-0.5, 0.5, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.5, -0.5, 0.5)],
+      [vec3(-0.5, -0.5, -0.5), vec3(-0.5, -0.5, 0.5), vec3(-0.5, 0.5, 0.5), vec3(-0.5, 0.5, -0.5)],
+      [vec3(0.5, -0.5, -0.5), vec3(0.5, -0.5, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.5, 0.5, -0.5)],
+      [vec3(-0.5, -0.5, -0.5), vec3(-0.5, -0.5, 0.5), vec3(0.5, -0.5, 0.5), vec3(0.5, -0.5, -0.5)],
+      [vec3(-0.5, 0.5, -0.5), vec3(-0.5, 0.5, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.5, 0.5, -0.5)]
+    ];
+  } // End of 'constructor' function
+} // End of 'cube' function
+
+export class octahedron extends solid {
+  constructor(rnd) {
+    super(rnd);
+    const pnt = 0.5;
+    this.vertexes = [
+      [vec3(0.0, 0.0, pnt), vec3(-pnt, pnt, 0.0), vec3(-pnt, -pnt, 0.0)],
+      [vec3(0.0, 0.0, pnt), vec3(-pnt, -pnt, 0.0), vec3(pnt, -pnt, 0.0)],
+      [vec3(0.0, 0.0, pnt), vec3(pnt, -pnt, 0.0), vec3(pnt, pnt, 0.0)],
+      [vec3(0.0, 0.0, pnt), vec3(pnt, pnt, 0.0), vec3(-pnt, pnt, 0.0)],
+      [vec3(0.0, 0.0, -pnt), vec3(-pnt, pnt, 0.0), vec3(-pnt, -pnt, 0.0)],
+      [vec3(0.0, 0.0, -pnt), vec3(-pnt, -pnt, 0.0), vec3(pnt, -pnt, 0.0)],
+      [vec3(0.0, 0.0, -pnt), vec3(pnt, -pnt, 0.0), vec3(pnt, pnt, 0.0)],
+      [vec3(0.0, 0.0, -pnt), vec3(pnt, pnt, 0.0), vec3(-pnt, pnt, 0.0)]
     ];
   }
 }
 
-export class octahedron extends Figure {
-  constructor(rnd) {
-    super(rnd);
-    const left = vec3(-0.5, 0, 0),
-      far = vec3(0, 0.5, 0),
-      right = vec3(0.5, 0, 0),
-      near = vec3(0, -0.5, 0),
-      down = vec3(0, 0, -0.5),
-      up = vec3(0, 0, 0.5);
-    this.vertexes = [
-      [near, left, up],
-      [near, right, up],
-      [near, right, down],
-      [near, left, down],
-      [left, far, up],
-      [left, far, down],
-      [right, far, up],
-      [right, far, down],
-    ];
-  }
-}
-
-export class dodecahedron extends Figure {
+export class dodecahedron extends solid {
   constructor(rnd) {
     super(rnd);
     const cos36 = Math.cos(D2R(36)) / 2,
@@ -185,12 +150,12 @@ export class dodecahedron extends Figure {
       [v43, v44, v24, v33, v23],
       [v44, v45, v25, v34, v24],
       [v45, v41, v21, v35, v25],
-      [v41, v42, v43, v44, v45],
+      [v41, v42, v43, v44, v45]
     ];
   }
 }
 
-export class icosahedron extends Figure {
+export class icosahedron extends solid {
   constructor(rnd) {
     super(rnd);
     const cos36 = Math.cos(D2R(36)) / 2,
@@ -232,7 +197,7 @@ export class icosahedron extends Figure {
       [up, ulu, uru],
       [up, uru, urd],
       [up, urd, uld],
-      [up, uld, ul],
+      [up, uld, ul]
     ];
   }
 }

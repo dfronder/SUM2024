@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : mat4.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 08.06.2024
+ * LAST UPDATE : 14.06.2024
  * PURPOSE     : Matrices (4x4) java script library file.
  */
 
@@ -33,9 +33,9 @@ class _mat4 {
   } // End of 'frustum' function
 
   view(loc, at, up1) {
-    let dir = new vec3();
-    let right = new vec3();
-    let up = new vec3();
+    let dir = vec3();
+    let right = vec3();
+    let up = vec3();
     let asl = at.sub(loc);
     dir = asl.normalize();
     let dcu1 = dir.cross(up1);

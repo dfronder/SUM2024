@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : render.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 13.06.2024
+ * LAST UPDATE : 14.06.2024
  * PURPOSE     : Main render module java script file.
  */
 
@@ -13,14 +13,13 @@ class _anim {
     this.initGL();
     this.timer = new dc.timer();
     this.camera = dc.camera();
-
-    this.camera.set(dc.vec3(4.5), dc.vec3(0), dc.vec3(0, 1, 0));
-
     this.camera.frameH = canvas.height;
     this.camera.frameW = canvas.width;
     this.camera.projSize = 0.1;
     this.camera.projSize = 0.1;
     this.camera.projFarClip = 1000;
+
+    this.camera.set(dc.vec3(2.0), dc.vec3(0), dc.vec3(0, 1, 0));
     this.camera.setProj(this.camera.projSize, this.camera.projSize, this.camera.projFarClip);
   } // End of 'constructor' function
 
@@ -31,7 +30,7 @@ class _anim {
   } // End of 'initGL' function
 
   render() {
-    this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+    //  this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.camera.setProj(this.camera.projDist, this.camera.projSize, this.camera.projFarClip);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     this.gl.clearDepth(1.0);
@@ -44,6 +43,31 @@ class _anim {
   shaderCreate(...args) {
     return dc.shader(this, ...args);
   } // End of 'shaderCreate' function
+
+  primCreateTetrahedron() {
+    const tetrahedron = new dc.tetrahedron(this);
+    return tetrahedron.makePrim(dc.mat4());
+  } // End of 'primCreateTetrahedron' function
+
+  primCreateCube() {
+    const cube = new dc.cube(this);
+    return cube.makePrim(dc.mat4());
+  } // End of 'primCreateTetrahedron' function
+
+  primCreateOctahedron() {
+    const octahedron = new dc.octahedron(this);
+    return octahedron.makePrim(dc.mat4());
+  } // End of 'primCreateTetrahedron' function
+  
+  primCreateDodecahedron() {
+    const dodecahedron = new dc.dodecahedron(this);
+    return dodecahedron.makePrim(dc.mat4());
+  } // End of 'primCreateTetrahedron' function
+  
+  primCreateIcosahedron() {
+    const icosahedron = new dc.icosahedron(this);
+    return icosahedron.makePrim(dc.mat4());
+  } // End of 'primCreateTetrahedron' function
 } // End of '_anim' function
 
 export function anim(...args) {
