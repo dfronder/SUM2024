@@ -9,7 +9,8 @@ import http from "node:http";
 import {WebSocketServer} from "ws";
 import express from "express";
 
-const clients = new Set();
+let clients = [];
+let max_connected = 0;
 
 const app = express();
 app.get('/', (req, res, next) => {
@@ -21,8 +22,12 @@ const server = http.createServer(app);
 
 const wss = new WebSocketServer({server});
 
-wss.on("connection", (ws) => {
-  clients.add(ws);
+function addClient(ws, wss, WebSocket) {
+  ws.userid = max_connected;
+  max_connected += 1;
+  clients.push(ws)
+
+  console.log("Client Connect: " + ws.userid + ". " + clients.length + " Online")
 
   ws.onmessage = (msg) => {
     let m = msg.data;
@@ -32,9 +37,20 @@ wss.on("connection", (ws) => {
     }
   }
 
-  ws.on('close', () => {
-    clients.delete(ws);
+  ws.on('close', () =>  {
+    removeClient(ws);
   });
+}
+
+function removeClient(ws) {
+  clients = clients.filter((check) => {
+      return check.userid != ws.userid
+  })
+  console.log("Client Disconnect: " + ws.userid + ". " + clients.length + " Online")
+}
+
+wss.on("connection", (ws) => {
+  addClient(ws, wss);
 })
 
 const host = `localhost`;
