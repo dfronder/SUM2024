@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : sdf.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 15.06.2024
+ * LAST UPDATE : 17.06.2024
  * PURPOSE     : SDF Marching parabolas algorithm javascript library file.
  */
 
@@ -13,55 +13,51 @@ let sdfImgData = [];
 let buildSdfData = [];
 let max_dist = 0;
 
+function getCoef(length) {
+  let coef = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+  return coef[Math.floor(length  / 100)];
+} // End of 'getCoef' function
+
 function intersectParabolas(p, q) {
   let x = ((q.y + q.x * q.x) - (p.y + p.x * p.x)) / (2 * q.x - 2 * p.x);
   return vec2(x, undefined);
 } // End of 'intersectParabolas' function
 
 function findHullParabolas(singleRow, hullVertices, hullIntersections) {
-  let d = singleRow;
-  let v = hullVertices;
-  let z = hullIntersections;
   let k = 0;
-  v[0].x = 0;
-  z[0].x = -INF;
-  z[1].x = INF;
-  for (let i = 0; i < d.length - 2; i++) {
-    let q = vec2(i, d[i]);
-    let p = v[k];
-    let s = intersectParabolas(p, q);
-    while (s.x <= z[k].x) {
-      k = k - 1;
-      p = v[k];
-      s = intersectParabolas(p, q);
+  hullVertices[0].x = 0;
+  hullIntersections[0].x = -INF;
+  hullIntersections[1].x = +INF;
+  for (let i = 1; i <= singleRow.length - 1; i++) {
+    let q = vec2(i, singleRow[i]);
+    let s = intersectParabolas(hullVertices[k], q);
+    while (s.x <= hullIntersections[k].x) {
+      k--;
+      s = intersectParabolas(hullVertices[k], q);
     }
-    k = k + 1;
-    v[k] = q;
-    z[k].x = s.x;
-    if (i == d.length - 1)
-      return;
-    z[k + 1].x = INF;
+    k++;
+    hullVertices[k] = q;
+    hullIntersections[k] = s;
+    hullIntersections[k + 1] = vec2(+INF, undefined);
   }
 } // End of 'findHullParabolas' function
 
 function marchParabolas(singleRow, hullVertices, hullIntersections) {
-  let d = singleRow;
-  let v = hullVertices;
-  let z = hullIntersections;
-  let k = 0;
-  for (let q = 0; q < d.length - 1; q++) {
-    while (z[k + 1].x < q)
-      k = k + 1;
-    let dx = q - v[k].x;
-    d[q] = dx * dx + v[k].y;
+  let k = 1;
+  for (let q = 0; q <= singleRow.length - 1; q++) {
+    while (hullIntersections[k + 1].x < q)
+      k++;
+    singleRow[q] = (q - hullVertices[k].x) * (q - hullVertices[k].x) + hullVertices[k].y;
   }
 } // End of 'marchParabolas' function
 
 function horizontalPass(singleRow) {
   let hullVertices = [singleRow.length];
-  let hullIntersections = [singleRow.length];
+  let hullIntersections = [singleRow.length + 1];
   for (let i = 0; i < singleRow.length; i++) {
     hullVertices[i] = vec2();
+  }
+  for (let i = 0; i < singleRow.length + 1; i++) {
     hullIntersections[i] = vec2();
   }
   findHullParabolas(singleRow, hullVertices, hullIntersections);
@@ -80,10 +76,8 @@ export function buildSDF() {
   }
   for (let i = 0; i < imgHeight; i++) {
     for (let j = 0; j < imgWidth; j++) {
-      if (buildOrData[imgHeight * i + j] == 0) {
+      if (buildOrData[imgWidth * i + j] == 0) {
         buildSdfData[i][j] = 0;
-      } else {
-        buildSdfData[i][j] = INF;
       }  
     }
   }
@@ -93,7 +87,7 @@ export function buildSDF() {
 
   buildSdfData = transpose(buildSdfData, imgWidth, imgHeight);
 
-  for (let row = 0; row < imgHeight; row++)
+  for (let row = 0; row < imgWidth; row++)
     horizontalPass(buildSdfData[row]);
 
   buildSdfData = transpose(buildSdfData, imgWidth, imgHeight);
@@ -105,22 +99,19 @@ export function buildSDF() {
         max_dist = buildSdfData[i][j];
     }  
   }
+  console.log(buildSdfData);
 } // End of 'buildSDF' function
 
 export function drawSDF() {
-  for (let i = 0; i < imgHeight; i++) {
-    for (let j = 0; j < imgWidth; j++) {
-      buildSdfData[i][j] /= max_dist;
-    }
-  }  
   sdfImgData = new Uint8ClampedArray(imgWidth * imgHeight * 4);
+  let coef = getCoef(imgHeight);
 
   for (let y = 0; y < imgHeight; y++) {
     for (let x = 0; x < imgWidth; x++) {
         let pos = (y * imgWidth + x) * 4;
-        sdfImgData[pos] = buildSdfData[y][x] * 20000;
-        sdfImgData[pos + 1] = buildSdfData[y][x] * 20000;
-        sdfImgData[pos + 2] = buildSdfData[y][x] * 20000;
+        sdfImgData[pos] = buildSdfData[y][x] * coef;
+        sdfImgData[pos + 1] = buildSdfData[y][x] * coef;
+        sdfImgData[pos + 2] = buildSdfData[y][x] * coef;
         sdfImgData[pos + 3] = 255;
     }
 

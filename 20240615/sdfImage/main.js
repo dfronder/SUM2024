@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : main.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 15.06.2024
+ * LAST UPDATE : 17.06.2024
  * PURPOSE     : SDF Image main javascript file.
  */
 
@@ -14,7 +14,7 @@ export let imgHeight = 0;
 import {buildSDF, drawSDF} from "./sdf.js";
 
 function loadOriginal() {
-  img.src = 'triangle.png';
+  img.src = 'images/sprite.png';
 } // End of 'loadOriginal' function
 
 setTimeout(() => {
