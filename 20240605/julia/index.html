@@ -1,7 +1,7 @@
 <!--
    FILE NAME   : index.html
    PROGRAMMER  : DC6
-   LAST UPDATE : 06.06.2024
+   LAST UPDATE : 17.06.2024
    PURPOSE     : Julia Fractal html file.
 -->
 
@@ -12,17 +12,23 @@
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="m.png" type="image/png" />
     <title>Julia Fractal</title>
+    <h1>Julia Fractal</h1>
   </head>
   <body>
-    <canvas id="myCan" width="900px" height="900px" style="border: 2px solid red"></canvas>
+    <canvas id="myCan" width="800px" height="800px" style="border: 2px solid red"></canvas>
     <script type="module">
-      import * as vigl from "./mylib.js";
- 
+      import {anim} from "./mylib.js";
+      window.anim = anim();
+      
       window.addEventListener("load", () => {
-        vigl.initGL();
+        window.anim.initGL();
+
         const draw = () => {
+          // timer response
+          window.anim.timer.response();
+
           // drawing
-          vigl.render();
+          window.anim.render();
  
           // animation register
           window.requestAnimationFrame(draw);
