@@ -10,12 +10,48 @@ let imgData = [];
 export let buildOrData = [];
 export let imgWidth = 0;
 export let imgHeight = 0;
+export let black_count = 0;
+export let white_count = 0;
 
 import {buildSDF, drawSDF} from "./sdf.js";
 
-function main() {
-  img.src = 'images/sprite.png';
+export function main() {
+  let fileInp = document.getElementById("myFile");
+  if (fileInp.files.length != 0) {
+    img.src = URL.createObjectURL(fileInp.files[0]);
+    $("#fileInp").val(null);
+    if (document.getElementById("errorHandle") != undefined) {
+      document.getElementById("errorHandle").remove();      
+    }
+  } else {
+    let list = document.getElementById("images");
+    let text = list.options[list.selectedIndex].text;
+    if (text == `-- select an image --`)
+    {
+      let error = document.createElement("p");
+      error.textContent = "ERROR: Image is not selected and not loaded.";
+      let gen = document.getElementById("gen");
+      error.setAttribute("id", "errorHandle");
+      gen.insertAdjacentElement("afterend", error);
+      return false;
+    } else {
+      if (document.getElementById("errorHandle") != undefined) {
+        document.getElementById("errorHandle").remove();      
+      }
+      img.src = `images/${text}`;
+    }
+  }
+  (buildOrData = []), (imgData = []),
+  (imgWidth = 0), (imgHeight = 0), (black_count = 0), (white_count = 0);
   setTimeout(() => {
+    let i = 0;
+
+    // Remove canvases
+    let oldOrCan = document.getElementById("originalCan");
+    oldOrCan.remove();
+    let oldSDFCan = document.getElementById("sdfCan");
+    oldSDFCan.remove();
+
     // Original canvas
     let textOriginal = document.getElementById("originalText");
     let canvOr = document.createElement("canvas");
@@ -44,15 +80,21 @@ function main() {
     imgData = context.getImageData(0, 0, canvOr.width, canvOr.height).data;
   
     // Convert data
-    for (let i = 0; i < imgData.length; i += 4)
+    for (i = 0; i < imgData.length; i += 4) {
       buildOrData.push(imgData[i] /= 255);
-  }, 10)
+      if (imgData[i] == 0) {
+        black_count++;
+      } else {
+        white_count++;
+      }
+    }
+  }, 70)
   setTimeout(() => {
     buildSDF();
     drawSDF();
-  }, 50);
+  }, 100);
 } // End of 'main' function
 
-main();
+document.getElementById("gen").onclick = function() {main()};
 
 /* END OF 'main.js' FILE */

@@ -1,7 +1,7 @@
 /*
  * FILE NAME   : mth.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 15.06.2024
+ * LAST UPDATE : 17.06.2024
  * PURPOSE     : Math javascript library file.
  */
 
@@ -29,17 +29,19 @@ export function vec2(...args) {
   return new _vec2(...args);
 } // End of 'vec2' function
 
-export function transpose(array, w, h) {
-  let newArray = [h];
-  for (let i = 0; i < h; i++) {
-    newArray[i] = new Array(w);
+export function transpose(array) {
+  if (array[0].length > 0) {
+    let newArray = [];
+    for (let i = 0; i < array[0].length; i++) {
+      newArray[i] = [];
+    }
+    for (let i = 0; i < array[0].length; i++) {
+      for (let j = 0; j < array.length; j++) {
+          newArray[i].push(array[j][i]);
+      }
+    }
+    return newArray;
   }
-
-  for (let i = 0; i < w; i++)
-    for (let j = 0; j < h; j++)
-      newArray[j][i] = array[i][j];
-
-  return newArray;
 } // End of 'transpose' function
 
 /* END OF 'mth.h' FILE */

@@ -6,7 +6,7 @@
  */
 
 import {vec2, transpose} from "./mth.js";
-import {buildOrData, imgWidth, imgHeight} from "./main.js";
+import {buildOrData, imgWidth, imgHeight, black_count, white_count} from "./main.js";
 
 const INF = 9999999;
 let sdfImgData = [];
@@ -65,20 +65,33 @@ function horizontalPass(singleRow) {
 } // End of 'horizontalPass' function
 
 export function buildSDF() {
+  buildSdfData = [];
+  sdfImgData = [];
+  max_dist = 0;
+
   buildSdfData = [imgHeight];
   for (let i = 0; i < imgHeight; i++) {
     buildSdfData[i] = new Array(imgWidth);
   }
-  for (let i = 0; i < imgHeight; i++) {
-    for (let j = 0; j < imgWidth; j++) {
-      buildSdfData[i][j] = INF;
+  if (white_count <= black_count) {
+    for (let i = 0; i < imgHeight; i++) {
+      for (let j = 0; j < imgWidth; j++) {
+        if (buildOrData[imgWidth * i + j] == 0) {
+          buildSdfData[i][j] = INF;
+        } else {
+          buildSdfData[i][j] = 0;
+        }  
+      }
     }
-  }
-  for (let i = 0; i < imgHeight; i++) {
-    for (let j = 0; j < imgWidth; j++) {
-      if (buildOrData[imgWidth * i + j] == 0) {
-        buildSdfData[i][j] = 0;
-      }  
+  } else {
+    for (let i = 0; i < imgHeight; i++) {
+      for (let j = 0; j < imgWidth; j++) {
+        if (buildOrData[imgWidth * i + j] == 0) {
+          buildSdfData[i][j] = 0;
+        } else {
+          buildSdfData[i][j] = INF;
+        }
+      }
     }
   }
 
@@ -99,27 +112,39 @@ export function buildSDF() {
         max_dist = buildSdfData[i][j];
     }  
   }
-  console.log(buildSdfData);
 } // End of 'buildSDF' function
 
 export function drawSDF() {
   sdfImgData = new Uint8ClampedArray(imgWidth * imgHeight * 4);
   let coef = getCoef(imgHeight);
 
-  for (let y = 0; y < imgHeight; y++) {
-    for (let x = 0; x < imgWidth; x++) {
-        let pos = (y * imgWidth + x) * 4;
-        sdfImgData[pos] = buildSdfData[y][x] * coef;
-        sdfImgData[pos + 1] = buildSdfData[y][x] * coef;
-        sdfImgData[pos + 2] = buildSdfData[y][x] * coef;
-        sdfImgData[pos + 3] = 255;
+  if (black_count >= white_count) {
+    for (let y = 0; y < imgHeight; y++) {
+      for (let x = 0; x < imgWidth; x++) {
+          let pos = (y * imgWidth + x) * 4;
+          sdfImgData[pos] = 255 - buildSdfData[y][x] * coef;
+          sdfImgData[pos + 1] = 255 - buildSdfData[y][x] * coef;
+          sdfImgData[pos + 2] = 255 - buildSdfData[y][x] * coef;
+          sdfImgData[pos + 3] = 255;
+      }
     }
+  } else {
+    for (let y = 0; y < imgHeight; y++) {
+      for (let x = 0; x < imgWidth; x++) {
+          let pos = (y * imgWidth + x) * 4;
+          sdfImgData[pos] = buildSdfData[y][x] * coef;
+          sdfImgData[pos + 1] = buildSdfData[y][x] * coef;
+          sdfImgData[pos + 2] = buildSdfData[y][x] * coef;
+          sdfImgData[pos + 3] = 255;
+      }
+    }
+  }
 
   let canvas = document.getElementById('sdfCan');
   let context = canvas.getContext('2d');
   let idata = context.createImageData(imgWidth, imgHeight);
   idata.data.set(sdfImgData);
   context.putImageData(idata, 0, 0);
-}} // End of 'drawSDF' function
+} // End of 'drawSDF' function
 
 /* END OF 'sdf.js' FILE */
