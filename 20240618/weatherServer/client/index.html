@@ -1,0 +1,32 @@
+<!--
+  FILE NAME   : index.html
+  PROGRAMMER  : DC6
+  LAST UPDATE : 18.06.2024
+  PURPOSE     : Weather server html file.
+-->
+
+<!DOCTYPE html>
+<html lang="ru" class="notranslate" translate="no">
+  <head>
+    <meta name="google" content="notranslate">    
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="../icon.png" type="image/png" />
+    <title>Weather</title>
+    <h2 class="link"><a href="/">Site root</a><br /></h2>
+    <style>
+      textarea {
+        resize: none;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="index.js"></script>
+    <p><b>Введите широту:</b></p>
+    <textarea id="lat" rows="1" cols="20" style="vertical-align: middle;"></textarea>
+    <p><b>Введите долготу:</b></p>
+    <textarea id="lon" rows="1" cols="20" style="vertical-align: middle;"></textarea>
+    <input id='sendData' type="button" checked value="Отправить" onClick="getWeather()" style="vertical-align: middle;"/>
+  </body>
+</html>
+
+<!-- END OF 'index.html' FILE -->
