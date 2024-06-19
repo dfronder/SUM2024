@@ -1,0 +1,24 @@
+textarea {
+  resize: none;
+}
+
+#tempText {
+  margin-top: 5px;
+  margin-left: 3px;
+  color: red;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}      
+
+#descText {
+  margin-left: 3px;
+  color: red;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+*
+{
+  text-align: center !important;
+  margin: auto !important;
+  align-items: center;
+  justify-items: center;
+}

@@ -1,7 +1,7 @@
 <!--
   FILE NAME   : index.html
   PROGRAMMER  : DC6
-  LAST UPDATE : 18.06.2024
+  LAST UPDATE : 19.06.2024
   PURPOSE     : Weather server html file.
 -->
 
@@ -11,21 +11,23 @@
     <meta name="google" content="notranslate">    
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="../icon.png" type="image/png" />
+    <link rel="stylesheet" href="style.css"/>
     <title>Weather</title>
     <h2 class="link"><a href="/">Site root</a><br /></h2>
-    <style>
-      textarea {
-        resize: none;
-      }
-    </style>
+    <br />
   </head>
   <body>
     <script type="module" src="index.js"></script>
-    <p><b>Введите широту:</b></p>
+    <p><b>Enter latitude:</b></p>
+    <br />
     <textarea id="lat" rows="1" cols="20" style="vertical-align: middle;"></textarea>
-    <p><b>Введите долготу:</b></p>
+    <br /><br />
+    <p><b>Enter longitude:</b></p>
+    <br />
     <textarea id="lon" rows="1" cols="20" style="vertical-align: middle;"></textarea>
-    <input id='sendData' type="button" checked value="Отправить" onClick="getWeather()" style="vertical-align: middle;"/>
+    <br /><br />
+    <input id='sendData' type="button" checked value="Send" onClick="getWeather()" style="vertical-align: middle;"/>
+    <br /><br />
   </body>
 </html>
 
