@@ -1,7 +1,7 @@
 <!--
   FILE NAME   : index.html
   PROGRAMMER  : DC6
-  LAST UPDATE : 19.06.2024
+  LAST UPDATE : 20.06.2024
   PURPOSE     : Weather server html file.
 -->
 
@@ -10,24 +10,24 @@
   <head>
     <meta name="google" content="notranslate">    
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="../icon.png" type="image/png" />
     <link rel="stylesheet" href="style.css"/>
-    <title>Weather</title>
+    <link rel="icon" href="favicon.ico">
+    <title>Weather Track</title>
+    <br />
+    <h1>Weather tracking (on LED-panel)</h1>
+    <br />
     <h2 class="link"><a href="/">Site root</a><br /></h2>
     <br />
   </head>
   <body>
     <script type="module" src="index.js"></script>
-    <p><b>Enter latitude:</b></p>
+    <p><b>Enter city name. To specify<br />country, enter country code<br />(example: Saint Petersburg, RU):</b></p>
     <br />
-    <textarea id="lat" rows="1" cols="20" style="vertical-align: middle;"></textarea>
-    <br /><br />
-    <p><b>Enter longitude:</b></p>
+    <div id="div">
+      <textarea id="data" rows="1" cols="20" style="vertical-align: middle;"></textarea>
+      <button id='track'>Start</button>
+    </div>
     <br />
-    <textarea id="lon" rows="1" cols="20" style="vertical-align: middle;"></textarea>
-    <br /><br />
-    <input id='sendData' type="button" checked value="Send" onClick="getWeather()" style="vertical-align: middle;"/>
-    <br /><br />
   </body>
 </html>
 
