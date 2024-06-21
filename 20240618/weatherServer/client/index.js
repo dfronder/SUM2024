@@ -126,13 +126,4 @@ function trackWeather() {
       });
 }
 
-function getPPM() {
-  socket.onmessage = (event) => {
-    let ppm = event.data;
-    console.log(ppm);
-  }
-}
-
 document.getElementById("track").onclick = function() {trackWeather()};
-
-getPPM();

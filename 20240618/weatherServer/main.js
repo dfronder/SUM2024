@@ -49,11 +49,9 @@ wss.on("connection", (ws) => {
       } else {
         console.log(`PPM created succesfully`);
       }
-    });    
-
-    ws.send(ppm);
+    });
   }
-})
+});
 
 const host = `127.0.0.1`;
 const port = 8000;
