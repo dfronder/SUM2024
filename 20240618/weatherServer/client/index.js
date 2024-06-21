@@ -1,10 +1,3 @@
-/*
- * FILE NAME   : index.js
- * PROGRAMMER  : DC6
- * LAST UPDATE : 20.06.2024
- * PURPOSE     : Weather index javascript file.
- */
-
 import {PixelFontCanvas} from "./lib/PixelFontCanvas.js";
 
 let socket = new WebSocket("ws://localhost:8000");
@@ -38,7 +31,7 @@ function restart() {
   if (canv != undefined) {
     canv.remove();
   }
-} // End of 'restart' function
+}
 
 function generateCanvas(data) {
   let canv = document.getElementById("can");
@@ -67,16 +60,14 @@ function generateCanvas(data) {
     });
     document.body.insertAdjacentElement("afterend", canv);
     let imgDataRGBA = ctx.getImageData(0, 0, canv.width, canv.height).data;
-    let imgDataRGB = new Uint8ClampedArray(canv.width * canv.height * 3);
+    let imgDataHEX = new Array(canv.width * canv.height);
     let pos = 0;
     for (let i = 0; i < canv.width * canv.height * 4; i += 4) {
-      imgDataRGB[pos] = imgDataRGBA[i];
-      imgDataRGB[pos++] = imgDataRGBA[i + 1];
-      imgDataRGB[pos++] = imgDataRGBA[i + 2];
+      imgDataHEX[pos++] = (imgDataRGBA[i] << 16) | (imgDataRGBA[i + 1] << 8) | (imgDataRGBA[i + 2]);
     }
-    socket.send(imgDataRGB);
+    socket.send(imgDataHEX);
   }
-} // End of 'generateCanvas' function
+}
 
 function trackWeather() {
   let oldData;
@@ -133,18 +124,15 @@ function trackWeather() {
           }, 60000);
         });
       });
-} // End of 'trackWeather' function
+}
 
 function getPPM() {
   socket.onmessage = (event) => {
     let ppm = event.data;
-    ppm = JSON.parse(ppm);
     console.log(ppm);
   }
-} // End of 'getPPM' function
+}
 
 document.getElementById("track").onclick = function() {trackWeather()};
 
 getPPM();
-
-/* END OF 'index.js' FILE */
