@@ -7,7 +7,7 @@
 
 import {PixelFontCanvas} from "./lib/PixelFontCanvas.js";
 
-let socket = new WebSocket("ws://localhost:8000");
+let socket = new WebSocket("ws://192.168.30.20:8000");
 
 PixelFontCanvas.loadFont("fonts/", "cg.fnt");
 
@@ -99,8 +99,8 @@ function trackWeather() {
     .then(response => response.json())
     .then(json => {
       if (json.length == 0) {
-        alert(`ERROR: Failed to get location data.`);
         restart();
+        alert(`ERROR: Failed to get location data.`);
         return;
       }
       lat = json[0].lat;
@@ -109,8 +109,8 @@ function trackWeather() {
         .then(response => response.json())
         .then(json => {
           if (json.length == 0) {
-            alert(`ERROR: Failed to get location data.`);
             restart();
+            alert(`ERROR: Failed to get location data.`);
             return;
           }
           data = [json.main.temp.toFixed(0), json.weather[0].icon];
@@ -121,8 +121,8 @@ function trackWeather() {
               .then(response => response.json())
               .then(json => {
                 if (json.length == 0) {
-                  alert(`ERROR: Failed to get weather data.`);
                   restart();
+                  alert(`ERROR: Failed to get weather data.`);
                   return;
                 }
                 data = [json.main.temp.toFixed(0), json.weather[0].icon];
@@ -138,8 +138,12 @@ function trackWeather() {
 
 function getMessage() {
   socket.onclose = () => {
-    alert(`ALERT: Server was closed.`);
     restart();
+    alert(`ALERT: Server was closed.`);
+  }
+
+  socket.onerror = () => {
+    alert(`ERROR: Failed to set connection with server.`);
   }
 }
 

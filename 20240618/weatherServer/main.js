@@ -62,9 +62,13 @@ wss.on("connection", (ws) => {
   ws.onclose = (event) => {
     ws.send(`msg`);
   }
+
+  ws.onerror = (event) => {
+    ws.send();
+  }
 });
 
-const host = `127.0.0.1`;
+const host = `192.168.30.20`;
 const port = 8000;
 
 server.listen(port, host, () => {
