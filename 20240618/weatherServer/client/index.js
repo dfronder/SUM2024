@@ -1,17 +1,23 @@
+/*
+  FILE NAME   : index.js
+  PROGRAMMER  : DC6
+  LAST UPDATE : 22.06.2024
+  PURPOSE     : Final project index (client-side) javascript file.
+*/
+
 import {PixelFontCanvas} from "./lib/PixelFontCanvas.js";
 
 let socket = new WebSocket("ws://localhost:8000");
 
 PixelFontCanvas.loadFont("fonts/", "cg.fnt");
 
+let lat;
+let lon;
 let loop;
 let apiKEY;
 fetch("../key.env").then(response => response.text()).then(text => {
   apiKEY = text;  
 });
-
-let lat;
-let lon;
 
 function restart() {
   const canv = document.getElementById("can");
@@ -70,6 +76,10 @@ function generateCanvas(data) {
 }
 
 function trackWeather() {
+  if (socket.readyState == socket.CLOSED || socket.readyState == socket.CLOSING) {
+    alert(`ERROR: Server is not available.`);
+    return;
+  }
   let oldData;
   let data;
   const text = document.getElementById("data"); 
@@ -89,7 +99,7 @@ function trackWeather() {
     .then(response => response.json())
     .then(json => {
       if (json.length == 0) {
-        alert(`Failed to get weather data`);
+        alert(`ERROR: Failed to get location data.`);
         restart();
         return;
       }
@@ -99,7 +109,7 @@ function trackWeather() {
         .then(response => response.json())
         .then(json => {
           if (json.length == 0) {
-            alert(`Failed to get weather data`);
+            alert(`ERROR: Failed to get location data.`);
             restart();
             return;
           }
@@ -111,7 +121,7 @@ function trackWeather() {
               .then(response => response.json())
               .then(json => {
                 if (json.length == 0) {
-                  alert(`Failed to get weather data`);
+                  alert(`ERROR: Failed to get weather data.`);
                   restart();
                   return;
                 }
@@ -126,4 +136,15 @@ function trackWeather() {
       });
 }
 
+function getMessage() {
+  socket.onclose = () => {
+    alert(`ALERT: Server was closed.`);
+    restart();
+  }
+}
+
 document.getElementById("track").onclick = function() {trackWeather()};
+
+getMessage();
+
+/* END OF 'index.js' FILE */

@@ -1,3 +1,10 @@
+/*
+  FILE NAME   : index.js
+  PROGRAMMER  : DC6
+  LAST UPDATE : 22.06.2024
+  PURPOSE     : Final project main (server-side) javascript file.
+*/
+
 import http from "node:http";
 import {WebSocketServer} from "ws";
 import express from "express";
@@ -50,6 +57,10 @@ wss.on("connection", (ws) => {
         console.log(`PPM created succesfully`);
       }
     });
+  }
+
+  ws.onclose = (event) => {
+    ws.send(`msg`);
   }
 });
 
