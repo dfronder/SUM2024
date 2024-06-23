@@ -1,25 +1,25 @@
 /*
  * FILE NAME   : mylib.js
  * PROGRAMMER  : DC6
- * LAST UPDATE : 17.06.2024
+ * LAST UPDATE : 23.06.2024
  * PURPOSE     : Julia Fractal java script file.
  */
 
 import {timer} from "./timer.js";  
 
 class _anim {
-  constructor() {
+  constructor(canvas) {
     this.timer = new timer();
-    this.canvas = 0;
+    this.canvas = canvas;
     this.gl = 0;
     this.timeLoc = 0;
     this.mouseLoc = 0;
     this.prg = 0;
     this.scale = 2.0;
-    this.movementX = 0;
-    this.movementY = 0;
-    this.X = 0;
-    this.Y = 0;
+    this.mousePos = {x: 0, y: 0};
+    this.oldMousePos = 0.0;
+    this.start = {x: -1, y: -1};
+    this.end = {x: 1, y: 1}; 
   } // End of 'constructor' function
 
   initGL() {
@@ -49,33 +49,28 @@ class _anim {
     
     in vec2 DrawPos;
     uniform float Time;
-    uniform vec3 Mouse;
-    
-    #define X_MOVEMENT Mouse.x
-    #define Y_MOVEMENT Mouse.y
-    #define WHEEL_MOVEMENT Mouse.z
+    uniform vec4 Mouse;
 
-    float xMov = 0.0;
-    float yMov = 0.0;
+    #define Start vec2(Mouse.xy)
+    #define End vec2(Mouse.zw)
 
     void main( void )
     {
-      xMov += X_MOVEMENT;
-      yMov += Y_MOVEMENT;
-      float coef = WHEEL_MOVEMENT;
-      vec2 Z = DrawPos * 2.0 + vec2(0.0, 0.0);
-      vec2 Z0 = Z, C = vec2(0.35 + 0.05 * sin(Time * 1.30), 0.35 + 0.05 * sin(Time * 0.8));
+      vec2 C = vec2(0.35 + 0.05 * sin(Time * 1.30), 0.35 + 0.05 * sin(Time * 0.8));;
+      vec2 Z = vec2((DrawPos.x + 1.0) * 0.5 * (End.x - Start.x) + Start.x, 
+                    (DrawPos.y + 1.0) * 0.5 * (End.y - Start.y) + Start.y);
+      vec2 Zn = Z;
       int n = 0;
-      
-      while (n < 255 && length(Z) < 2.0)
+
+      while (n++ < 255 && length(Zn) <= 2.0)
       {
-        Z = vec2(Z.x * Z.x - Z.y * Z.y, 2.0 * Z.x * Z.y) + C;
-        n++;
+        Zn = vec2(Zn.x * Zn.x - Zn.y * Zn.y, Zn.x * Zn.y + Zn.x * Zn.y);
+        Zn = Zn + C;
       }
-      
-      OutColor = vec4(DrawPos, 0, 1) * 0.5 + 0.5;
-      OutColor.g = float(n) / 255.0;
-      OutColor = vec4(float(n) * 30.0 / 1000.0, float(n) * 8.0 / 1000.0, float(n) * (15.0 + 17.0 * abs(sin(Time))) / 1000.0, 1);
+
+      OutColor = vec4(0.9 - float(n) / 255.0,
+                      0.9 - float(n) / 255.0 * sin(2000.0) * 1.5,
+                      0.9 - float(n) / 255.0 * sin(2000.0) * 2.0, 1.0);
     }
     `;
     let
@@ -127,7 +122,7 @@ class _anim {
     if (this.timeLoc != -1)
       this.gl.uniform1f(this.timeLoc, this.timer.pauseTime);
     if (this.mouseLoc != -1) {
-      this.gl.uniform3fv(this.mouseLoc, new Float32Array([this.X, this.Y, this.scale]));
+      this.gl.uniform4fv(this.mouseLoc, new Float32Array([this.start.x, this.start.y, this.end.x, this.end.y]));
     }
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   } // End of 'render' function
@@ -143,20 +138,12 @@ window.addEventListener('keydown', (event) => {
   }
 });
 
-window.addEventListener("wheel", (event) => {
-  event.preventDefault;
+document.getElementById("myCan").onwheel = (event) => {
+  event.preventDefault();
+};
 
-  window.anim.scale += event.deltaY / 2000.0;
-});
-
-document.addEventListener('mousemove', (event) => {
-  if (event.buttons == 1) {
-    let rect = window.anim.canvas.getBoundingClientRect();
-    window.anim.movementX = event.clientX - rect.left;
-    window.anim.movementY = event.clientY - rect.top;
-    window.anim.X -= window.anim.X / 10000.0 - window.anim.movementX / 10000.0;
-    window.anim.Y += window.anim.Y / 10000.0 - window.anim.movementY / 10000.0;
-  }
-});
+document.getElementById("myCan").onmousewheel = (event) => {
+  event.preventDefault();
+};
 
 /* END OF 'mylib.js' FILE */

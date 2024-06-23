@@ -1,7 +1,7 @@
 <!--
    FILE NAME   : index.html
    PROGRAMMER  : DC6
-   LAST UPDATE : 17.06.2024
+   LAST UPDATE : 23.06.2024
    PURPOSE     : Julia Fractal html file.
 -->
 
@@ -12,28 +12,65 @@
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="m.png" type="image/png" />
     <title>Julia Fractal</title>
-    <h1>Julia Fractal</h1>
+    <h1>Julia Fractal (Press P to pause)</h1>
   </head>
   <body>
-    <canvas id="myCan" width="800px" height="800px" style="border: 2px solid red"></canvas>
+    <canvas id="myCan" width="600px" height="600px" style="border: 2px solid red"></canvas>
     <script type="module">
       import {anim} from "./mylib.js";
-      window.anim = anim();
+      let canvas = document.getElementById("myCan");
+      window.anim = anim(canvas);
       
       window.addEventListener("load", () => {
         window.anim.initGL();
 
         const draw = () => {
-          // timer response
           window.anim.timer.response();
 
-          // drawing
           window.anim.render();
  
-          // animation register
           window.requestAnimationFrame(draw);
         };
         draw();
+      });
+      window.addEventListener("wheel", (event) => {
+        event.preventDefault;
+        let size = {x: window.anim.end.x - window.anim.start.x, y: window.anim.end.y - window.anim.start.y};
+      
+        let mp = {x: window.anim.mousePos.x * 2 - 1, y: window.anim.mousePos.y * 2 - 1};
+      
+        let s = {x: mp.x * size.x + window.anim.start.x, y: mp.y * size.y + window.anim.start.y};
+        let e = {x: mp.x * size.x + window.anim.end.x, y: mp.y * size.y + window.anim.end.y};
+      
+        let delta = -0.03 * (event.deltaY / Math.abs(event.deltaY)) * size.x;
+      
+        s.x += delta, s.y += delta;
+        e.x -= delta, e.y -= delta;
+      
+        window.anim.start.x = s.x - mp.x * (size.x - delta * 2);
+        window.anim.start.y = s.y - mp.y * (size.x - delta * 2);
+      
+        window.anim.end.x = e.x - mp.x * (size.x - delta * 2);
+        window.anim.end.y = e.y - mp.y * (size.y - delta * 2);
+      });
+      window.addEventListener('mousemove', (event) => {
+        event.preventDefault;
+        let rect = canvas.getBoundingClientRect();
+
+        window.anim.oldMousePos = {x: window.anim.mousePos.x, y: window.anim.mousePos.y};
+      
+        window.anim.mousePos.x = (event.clientX - rect.left) / window.anim.canvas.width;
+        window.anim.mousePos.y = -(event.clientY - rect.top) / window.anim.canvas.height + 1;
+        
+        if (event.buttons == 1)
+        {
+          let size = {x: window.anim.end.x - window.anim.start.x, y: window.anim.end.y - window.anim.start.y};
+      
+          window.anim.start.x -= (window.anim.mousePos.x - window.anim.oldMousePos.x) * size.x;
+          window.anim.start.y -= (window.anim.mousePos.y - window.anim.oldMousePos.y) * size.y;
+          window.anim.end.x -= (window.anim.mousePos.x - window.anim.oldMousePos.x) * size.x;
+          window.anim.end.y -= (window.anim.mousePos.y - window.anim.oldMousePos.y) * size.y;
+        }
       });
     </script>
   </body>
