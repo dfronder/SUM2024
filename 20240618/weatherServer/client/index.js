@@ -1,13 +1,14 @@
 /*
   FILE NAME   : index.js
   PROGRAMMER  : DC6
-  LAST UPDATE : 22.06.2024
+  LAST UPDATE : 24.06.2024
   PURPOSE     : Final project index (client-side) javascript file.
 */
 
 import {PixelFontCanvas} from "./lib/PixelFontCanvas.js";
 
 let socket = new WebSocket("ws://192.168.30.20:8000");
+let socketReciever = new WebSocket("ws://192.168.30.18:8000");
 
 PixelFontCanvas.loadFont("fonts/", "cg.fnt");
 
@@ -19,7 +20,7 @@ fetch("../key.env").then(response => response.text()).then(text => {
   apiKEY = text;  
 });
 
-function restart() {
+function restore() {
   const canv = document.getElementById("can");
   const text = document.getElementById("data");
   const endTrack = document.getElementById("endTrack");
@@ -71,13 +72,17 @@ function generateCanvas(data) {
     for (let i = 0; i < canv.width * canv.height * 4; i += 4) {
       imgDataHEX[pos++] = (imgDataRGBA[i] << 16) | (imgDataRGBA[i + 1] << 8) | (imgDataRGBA[i + 2]);
     }
-    socket.send(imgDataHEX);
+    socketReciever.send(imgDataHEX);
   }
 }
 
 function trackWeather() {
   if (socket.readyState == socket.CLOSED || socket.readyState == socket.CLOSING) {
     alert(`ERROR: Server is not available.`);
+    return;
+  }
+  if (socketReciever.readyState == socket.CLOSED || socketReciever.readyState == socket.CLOSING) {
+    alert(`ERROR: Raspberry Pi is not available.`);
     return;
   }
   let oldData;
@@ -91,7 +96,8 @@ function trackWeather() {
   endTrack.textContent = "Stop";
   endTrack.setAttribute("id", "endTrack");
   endTrack.onclick = () => {
-    restart();
+    restore();
+    socketReciever.send(`RESTORE`);
   }
   div.appendChild(endTrack);
   text.disabled = true;
@@ -99,7 +105,7 @@ function trackWeather() {
     .then(response => response.json())
     .then(json => {
       if (json.length == 0) {
-        restart();
+        restore();
         alert(`ERROR: Failed to get location data.`);
         return;
       }
@@ -109,7 +115,7 @@ function trackWeather() {
         .then(response => response.json())
         .then(json => {
           if (json.length == 0) {
-            restart();
+            restore();
             alert(`ERROR: Failed to get location data.`);
             return;
           }
@@ -121,7 +127,7 @@ function trackWeather() {
               .then(response => response.json())
               .then(json => {
                 if (json.length == 0) {
-                  restart();
+                  restore();
                   alert(`ERROR: Failed to get weather data.`);
                   return;
                 }
@@ -138,11 +144,14 @@ function trackWeather() {
 
 function getMessage() {
   socket.onclose = () => {
-    restart();
+    restore();
+    socketReciever.send(`RESTORE`);
     alert(`ALERT: Server was closed.`);
   }
 
   socket.onerror = () => {
+    restore();
+    socketReciever.send(`RESTORE`);
     alert(`ERROR: Failed to set connection with server.`);
   }
 }
