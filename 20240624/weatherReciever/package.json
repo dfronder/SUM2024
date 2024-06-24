@@ -1,0 +1,19 @@
+{
+  "name": "weatherreciever",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "http-server": "^14.1.1",
+    "serve-favicon": "^2.5.0",
+    "ws": "^8.17.1"
+  }
+}
