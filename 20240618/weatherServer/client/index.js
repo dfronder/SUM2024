@@ -1,3 +1,4 @@
+
 /*
   FILE NAME   : index.js
   PROGRAMMER  : DC6
@@ -40,6 +41,49 @@ function restore() {
   }
 }
 
+function createPageDescription(json) {
+  let img = document.createElement("img");
+  let place = document.createElement("p");
+  let temp = document.createElement("p");
+  let desc = document.createElement("p");
+  let lon = document.createElement("p");
+  let lat = document.createElement("p");
+  let div = document.getElementById("left");
+  place.textContent = `Tracking place: ${json.name}, ${json.sys.country}\n\n\n`;
+  temp.textContent = `Current temperature: ${json.main.temp}°C\n\n\n`;
+  desc.textContent = `Weather description: ${json.weather[0].description}\n\n\n`;
+  lon.textContent = `Longitude: ${json.coord.lon}\n\n\n`;
+  lat.textContent = `Latitude: ${json.coord.lat}\n\n\n`;
+  img.src = `https://openweathermap.org/img/wn/${json.weather[0].icon}@2x.png`;
+  img.setAttribute("id", "weatherIco");
+  place.setAttribute("id", "textPlace");
+  temp.setAttribute("id", "textTemp");
+  desc.setAttribute("id", "textDesc");
+  lon.setAttribute("id", "textLon");
+  lat.setAttribute("id", "textLat");
+  div.insertAdjacentElement("beforeend", place);
+  div.insertAdjacentElement("beforeend", lon);
+  div.insertAdjacentElement("beforeend", lat);
+  div.insertAdjacentElement("beforeend", temp);
+  div.insertAdjacentElement("beforeend", desc);
+  div.insertAdjacentElement("beforeend", img);
+}
+
+function deletePageDescription() {
+  if (document.getElementById("weatherIco") != undefined)
+    document.getElementById("weatherIco").remove();
+  if (document.getElementById("textPlace") != undefined)
+    document.getElementById("textPlace").remove();
+  if (document.getElementById("textTemp") != undefined)
+    document.getElementById("textTemp").remove();
+  if (document.getElementById("textDesc") != undefined)
+    document.getElementById("textDesc").remove();
+  if (document.getElementById("textLon") != undefined)
+    document.getElementById("textLon").remove();
+  if (document.getElementById("textLat") != undefined)
+    document.getElementById("textLat").remove();
+}
+
 function generateCanvas(data) {
   let canv = document.getElementById("can");
   if (canv != undefined) {
@@ -65,24 +109,23 @@ function generateCanvas(data) {
       align: 'left',
       tint: '#FFFFFF'
     });
-    document.body.insertAdjacentElement("afterend", canv);
     let imgDataRGBA = ctx.getImageData(0, 0, canv.width, canv.height).data;
     let imgDataHEX = new Array(canv.width * canv.height);
     let pos = 0;
     for (let i = 0; i < canv.width * canv.height * 4; i += 4) {
       imgDataHEX[pos++] = (imgDataRGBA[i] << 16) | (imgDataRGBA[i + 1] << 8) | (imgDataRGBA[i + 2]);
     }
-    socketReciever.send(imgDataHEX);
+    socketReciever.send(JSON.stringify(imgDataHEX));
   }
 }
 
 function trackWeather() {
-  if (socket.readyState == socket.CLOSED || socket.readyState == socket.CLOSING) {
+  if (socket.readyState != socket.OPEN) {
     alert(`ERROR: Server is not available.`);
     return;
   }
-  if (socketReciever.readyState == socket.CLOSED || socketReciever.readyState == socket.CLOSING) {
-    alert(`ERROR: Raspberry Pi is not available.`);
+  if (socketReciever.readyState != socket.OPEN) {
+    alert(`ERROR: RPI Server is not available.`);
     return;
   }
   let oldData;
@@ -97,6 +140,7 @@ function trackWeather() {
   endTrack.setAttribute("id", "endTrack");
   endTrack.onclick = () => {
     restore();
+    deletePageDescription();
     socketReciever.send(`RESTORE`);
   }
   div.appendChild(endTrack);
@@ -106,6 +150,7 @@ function trackWeather() {
     .then(json => {
       if (json.length == 0) {
         restore();
+        deletePageDescription();
         alert(`ERROR: Failed to get location data.`);
         return;
       }
@@ -116,10 +161,12 @@ function trackWeather() {
         .then(json => {
           if (json.length == 0) {
             restore();
+            deletePageDescription();
             alert(`ERROR: Failed to get location data.`);
             return;
           }
           data = [json.main.temp.toFixed(0), json.weather[0].icon];
+          createPageDescription(json);
           generateCanvas(data);
           oldData = data;
           loop = setInterval(() => {
@@ -128,18 +175,40 @@ function trackWeather() {
               .then(json => {
                 if (json.length == 0) {
                   restore();
+                  deletePageDescription();
                   alert(`ERROR: Failed to get weather data.`);
                   return;
                 }
                 data = [json.main.temp.toFixed(0), json.weather[0].icon];
                 if (oldData[0] != data[0] || oldData[1] != data[1]) {
                   oldData = data;
+                  deletePageDescription();
+                  createPageDescription(json);
                   generateCanvas(data);
                 } 
             });
           }, 60000);
         });
       });
+}
+
+function sendMsg() {
+  if (socket.readyState != socket.OPEN) {
+    alert(`ERROR: Server is not available.`);
+    return;
+  }
+  if (socketReciever.readyState != socket.OPEN) {
+    alert(`ERROR: RPI Server is not available.`);
+    return;
+  }
+  let tag = document.getElementById("color");
+  let x = tag.value;
+  let r = eval("0x" + x[1] + x[2]);
+  let g = eval("0x" + x[3] + x[4]);
+  let b = eval("0x" + x[5] + x[6]);
+  let text = document.getElementById("message").value;
+  document.getElementById("message").value = ``;
+  socketReciever.send(JSON.stringify([`MSG`, text, r, g, b]));
 }
 
 function getMessage() {
@@ -154,9 +223,28 @@ function getMessage() {
     socketReciever.send(`RESTORE`);
     alert(`ERROR: Failed to set connection with server.`);
   }
+
+  socketReciever.onmessage = (event) => {
+    alert(event.data);
+  }
 }
 
+document.getElementById("data").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("track").click();
+  }
+});
+
+document.getElementById("message").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("msg").click();
+  }
+});
+
 document.getElementById("track").onclick = function() {trackWeather()};
+document.getElementById("msg").onclick = function() {sendMsg()};
 
 getMessage();
 

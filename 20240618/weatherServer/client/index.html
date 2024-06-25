@@ -1,7 +1,7 @@
 <!--
   FILE NAME   : index.html
   PROGRAMMER  : DC6
-  LAST UPDATE : 22.06.2024
+  LAST UPDATE : 24.06.2024
   PURPOSE     : Final project html file.
 -->
 
@@ -13,19 +13,28 @@
     <link rel="stylesheet" href="style.css"/>
     <link rel="icon" href="favicon.ico">
     <title>Weather Track</title>
-    <br />
-    <h1>Weather tracking (on LED-panel)</h1>
-    <br />
   </head>
   <body>
     <script type="module" src="index.js"></script>
-    <p><b>Enter city name. To specify<br />country, enter country code<br />(example: Saint Petersburg, RU):</b></p>
-    <br />
-    <div id="div">
-      <textarea id="data" rows="1" cols="20" style="vertical-align: middle;"></textarea>
-      <button id='track'>Start</button>
+    <div id="left">
+      <br /><h1>Weather tracking<br />(on LED-panel)</h1><br />
+      <p><b>Enter city name. To specify<br />country, enter country code<br />(example: Saint Petersburg, RU):</b></p><br />
+      <div id="div">
+        <textarea id="data" rows="1" cols="20" style="vertical-align: middle;"></textarea>
+        <button id='track'>Start</button>
+      </div>
+      <br /><p id="ow">The data is provided by OpenWeather API</p><br />
     </div>
-    <br />
+    <div id="right">
+      <br /><h1>Send message<br />to LED-panel</h1><br />
+      <p><b>Enter message you want to send.<br />You can specify color.<br />Supports cyrillic alphabet.</b></p>
+      <div id="div">
+        <br /><p style="font-weight: bold;" id="pick">Choose color of message: <input id="color" value="#4D78CC" type="color" /></p><br />
+        <textarea id="message" rows="1" cols="20" style="vertical-align: middle;"></textarea>
+        <button id='msg'>Send</button>
+      </div>
+    </div>
+    <div id="clearfix"></div>
   </body>
 </html>
 

@@ -28,7 +28,53 @@ textarea {
   text-align: center;
 }
 
-#errorHandle {
+#textPlace, #textDesc, #textTemp, #textLat, #textLon {
+  margin-top: 5px;
+  margin-left: 3px;
   color: red;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
   font-weight: bold;
+}
+
+img {
+  width: 50px;
+  height: auto;
+}
+
+#left {
+  float: left;
+  width: 50%;
+  overflow-x: auto;
+  white-space: nowrap; 
+}
+
+#right {
+  float: left;
+  width: 50%;
+  overflow-x: auto;
+  white-space: nowrap; 
+}
+
+#clearfix {
+  clear: both;
+}
+
+#msg {
+  border-radius: 2px;
+  border-color: grey;
+  vertical-align: middle;
+  text-align: center;
+}
+
+#color {
+  vertical-align: middle;
+  border:0;
+  height: 30px;
+  width: 30px;
+}
+
+#ow {
+  font-size: small;
+  font-weight: lighter;
+  color: grey;
 }
