@@ -1,9 +1,9 @@
 /*
-  FILE NAME   : main.js
-  PROGRAMMER  : DC6
-  LAST UPDATE : 24.06.2024
-  PURPOSE     : Final project main (server-side) javascript file.
-*/
+ * FILE NAME   : main.js
+ * PROGRAMMER  : DC6
+ * LAST UPDATE : 25.06.2024
+ * PURPOSE     : Final project main (server-side) javascript file.
+ */
 
 import http from "node:http";
 import {WebSocketServer} from "ws";

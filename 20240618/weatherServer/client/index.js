@@ -1,10 +1,9 @@
-
 /*
-  FILE NAME   : index.js
-  PROGRAMMER  : DC6
-  LAST UPDATE : 24.06.2024
-  PURPOSE     : Final project index (client-side) javascript file.
-*/
+ * FILE NAME   : index.js
+ * PROGRAMMER  : DC6
+ * LAST UPDATE : 25.06.2024
+ * PURPOSE     : Final project index (client-side) javascript file.
+ */
 
 import {PixelFontCanvas} from "./lib/PixelFontCanvas.js";
 
