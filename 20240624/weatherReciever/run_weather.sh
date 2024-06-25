@@ -1,1 +1,0 @@
-./led-image-viewer -f --led-rows=16 --led-gpio-mapping="classic-pi1" /home/dc6/Desktop/weatherReciever/weather.ppm --led-no-hardware-pulse --led-slowdown-gpio=4
