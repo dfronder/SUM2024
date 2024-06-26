@@ -36,14 +36,13 @@
       const handleZoom = (event) => {
         event.preventDefault();
 
-        const scaleFactor = 1.05;
-        const zoomIn = event.deltaY < 0;
+        const scaleFactor = 1.15;
+        const zoomIn = -event.deltaY < 0;
 
         const zoom = zoomIn ? scaleFactor : 1 / scaleFactor;
 
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = (event.clientX - rect.left) / rect.width;
-        const mouseY = (event.clientY - rect.top) / rect.height;
+        const mouseX = event.clientX / window.anim.canvas.width;
+        const mouseY = -event.clientY / window.anim.canvas.height + 1;
 
         const worldX = window.anim.start.x + mouseX * (window.anim.end.x - window.anim.start.x);
         const worldY = window.anim.start.y + mouseY * (window.anim.end.y - window.anim.start.y);
@@ -58,10 +57,10 @@
         event.preventDefault();
         const rect = canvas.getBoundingClientRect();
 
-        window.anim.oldMousePos = { ...window.anim.mousePos };
+        window.anim.oldMousePos = {...window.anim.mousePos};
 
-        window.anim.mousePos.x = (event.clientX - rect.left) / window.anim.canvas.width;
-        window.anim.mousePos.y = -(event.clientY - rect.top) / window.anim.canvas.height + 1;
+        window.anim.mousePos.x = event.clientX / window.anim.canvas.width;
+        window.anim.mousePos.y = -event.clientY / window.anim.canvas.height + 1;
 
         if (event.buttons === 1) {
           const size = {
