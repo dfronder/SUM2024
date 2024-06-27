@@ -5,7 +5,7 @@
  * PURPOSE     : Main chat index java script file.
  */
 
-let socket = new WebSocket("ws://localhost:8000");
+let socket = new WebSocket("ws://192.168.30.20:8000");
 
 function clearChain() {
   let t = document.getElementById("chain");

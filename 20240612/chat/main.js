@@ -8,11 +8,15 @@
 import http from "node:http";
 import {WebSocketServer} from "ws";
 import express from "express";
+import morgan from "morgan";
 
 let clients = [];
 let max_connected = 0;
 
 const app = express();
+
+app.use(morgan('common'));
+
 app.get('/', (req, res, next) => {
   next();
 });
@@ -53,7 +57,7 @@ wss.on("connection", (ws) => {
   addClient(ws, wss);
 })
 
-const host = `localhost`;
+const host = `192.168.30.20`;
 const port = 8000;
 
 server.listen(port, host, () => {
